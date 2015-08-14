@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <div>Enter menu items, one line each:</div>
+        <textarea></textarea>
+        <button type="button">Save</button>
+        <style type="text/css" media="all">
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                height: 300px;
+                margin: 0;
+                overflow: auto;
+                padding: 10px;
+                text-align: center;
+                width: 300px;
+            }
+            button {
+                display: inline-block;
+            }
+            textarea {
+                height: 230px;
+                resize: none;
+                width: 280px;
+            }
+        </style>
+        <script type="text/javascript">
+            var button = document.getElementsByTagName("button")[0];
+            var textArea = document.getElementsByTagName("textarea")[0];
+
+            function save() {
+                addon.port.emit("save", textArea.value);
+            }
+            button.onclick = save;
+
+            function setContent(text) {
+                textArea.value = text;
+            }
+            addon.port.on("show", setContent)
+        </script>
+    </body>
+</html>

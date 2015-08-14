@@ -11,9 +11,16 @@
         {
             "name": "items",
             "title": "Menu Items",
-            "description": "Menu items separated by |",
+            "description": "Menu items separated by new line",
             "type": "string",
-            "value": ""
+            "value": "",
+            "hidden": true
+        },
+        {
+            "type": "control",
+            "label": "Edit",
+            "name": "editButton",
+            "title": "Menu Items"
         }
     ]
 }
