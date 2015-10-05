@@ -1,4 +1,4 @@
-const simplePreferences = require('sdk/simple-prefs');
+const simplePreferences = require("sdk/simple-prefs");
 const ui = require("./lib/ui");
 
 const preferences = simplePreferences.prefs;
