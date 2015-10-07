@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sblask/firefox-simple-form-fill.svg?branch=master)](https://travis-ci.org/sblask/firefox-simple-form-fill)
+
 firefox-simple-form-fill
 ========================
 Enter text into input fields by choosing items from the context menu. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.
