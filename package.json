@@ -6,7 +6,7 @@
     "description": "Enter text into input fields by choosing items from the context menu. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.",
     "author": "Sebastian Blask",
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "preferences-branch": "simpleformfill",
     "preferences": [
         {
