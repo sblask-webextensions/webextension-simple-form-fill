@@ -1,6 +1,6 @@
 /* globals window, self */
 /* jshint unused: false */
-self.on("click", function (node, _data) {
+self.on("click", function(node, _data) {
     let selection;
     if (node.selectionStart || node.selectionEnd) {
         selection = node.value.slice(node.selectionStart, node.selectionEnd);

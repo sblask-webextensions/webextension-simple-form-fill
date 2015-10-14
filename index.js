@@ -12,12 +12,12 @@ ui.panel.on("show", function() {
     ui.panel.port.emit("show", preferences.items);
 });
 // save content and hide on save button click
-ui.panel.port.on("save", function (text) {
+ui.panel.port.on("save", function(text) {
     ui.panel.hide();
     preferences.items = text;
 });
 
-simplePreferences.on("items", function(){
+simplePreferences.on("items", function() {
     ui.populateSubMenu();
 });
 

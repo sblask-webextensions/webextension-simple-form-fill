@@ -1,5 +1,5 @@
 /* globals self */
-self.on("click", function (node, data) {
+self.on("click", function(node, data) {
     if (node.selectionStart || node.selectionEnd) {
         node.value = node.value.slice(0, node.selectionStart) + data + node.value.slice(node.selectionEnd, node.value.length);
     } else if (node.caretPosition) {
