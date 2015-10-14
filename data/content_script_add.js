@@ -7,6 +7,7 @@ self.on("click", function(node, _data) {
     } else {
         selection = window.getSelection().toString();
     }
+
     if (selection.length > 0) {
         self.postMessage(selection);
     }

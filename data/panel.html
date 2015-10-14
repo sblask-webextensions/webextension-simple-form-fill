@@ -36,11 +36,13 @@
             function save() {
                 addon.port.emit("save", textArea.value);
             }
+
             button.onclick = save;
 
             function setContent(text) {
                 textArea.value = text;
             }
+
             addon.port.on("show", setContent);
         </script>
     </body>
