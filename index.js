@@ -3,24 +3,28 @@ const ui = require("./lib/ui");
 
 const preferences = simplePreferences.prefs;
 
-// Use a panel because there is no multiline string in simple-prefs
-// show and fill on button click in preference
-simplePreferences.on("editButton", function() {
-    ui.panel.show();
-});
+exports.main = function(options) {
+    console.log("Starting up with reason ", options.loadReason);
 
-ui.panel.on("show", function() {
-    ui.panel.port.emit("show", preferences.items);
-});
+    // Use a panel because there is no multiline string in simple-prefs
+    // show and fill on button click in preference
+    simplePreferences.on("editButton", function() {
+        ui.panel.show();
+    });
 
-// save content and hide on save button click
-ui.panel.port.on("save", function(text) {
-    ui.panel.hide();
-    preferences.items = text;
-});
+    ui.panel.on("show", function() {
+        ui.panel.port.emit("show", preferences.items);
+    });
 
-simplePreferences.on("items", function() {
+    // save content and hide on save button click
+    ui.panel.port.on("save", function(text) {
+        ui.panel.hide();
+        preferences.items = text;
+    });
+
+    simplePreferences.on("items", function() {
+        ui.populateSubMenu();
+    });
+
     ui.populateSubMenu();
-});
-
-ui.populateSubMenu();
+};
