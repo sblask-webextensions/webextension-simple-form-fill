@@ -1,35 +1,71 @@
 const simplePreferences = require("sdk/simple-prefs");
 const ui = require("./lib/ui");
 
-const preferences = simplePreferences.prefs;
+let addMenu;
+let fillMenu;
+let panel;
+
+function __showPanel() {
+    if (panel) {
+        panel.show();
+    }
+}
+
+function __fillPanel() {
+    if (panel) {
+        panel.port.emit("show", simplePreferences.prefs.items);
+    }
+}
+
+function __save(text) {
+    if (panel) {
+        panel.hide();
+        simplePreferences.prefs.items = text;
+    }
+}
+
+function __updateMenu() {
+    ui.updateContextMenu(fillMenu);
+}
 
 exports.main = function(options) {
     console.log("Starting up with reason ", options.loadReason);
 
+    addMenu = ui.makeAddMenu();
+    fillMenu = ui.makeFillMenu();
+
     // Use a panel because there is no multiline string in simple-prefs
     // show and fill on button click in preference
-    simplePreferences.on("editButton", function() {
-        ui.panel.show();
-    });
-
-    ui.panel.on("show", function() {
-        ui.panel.port.emit("show", preferences.items);
-    });
+    panel = ui.makePanel();
+    panel.on("show", __fillPanel);
 
     // save content and hide on save button click
-    ui.panel.port.on("save", function(text) {
-        ui.panel.hide();
-        preferences.items = text;
-    });
+    panel.port.on("save", __save);
 
-    simplePreferences.on("items", function() {
-        ui.populateSubMenu();
-    });
+    simplePreferences.on("editButton", __showPanel);
+    simplePreferences.on("items", __updateMenu);
 
-    ui.populateSubMenu();
+    __updateMenu();
 };
 
 exports.onUnload = function(reason) {
     console.log("Closing down with reason ", reason);
 
+    simplePreferences.removeListener("items", __updateMenu);
+    simplePreferences.removeListener("editButton", __showPanel);
+
+    if (panel) {
+        panel.destroy();
+        panel = null;
+    }
+
+    if (fillMenu) {
+        fillMenu.destroy();
+        fillMenu = null;
+    }
+
+    if (addMenu) {
+        addMenu.destroy();
+        addMenu = null;
+    }
 };
