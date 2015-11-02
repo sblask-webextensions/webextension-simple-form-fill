@@ -28,3 +28,8 @@ exports.main = function(options) {
 
     ui.populateSubMenu();
 };
+
+exports.onUnload = function(reason) {
+    console.log("Closing down with reason ", reason);
+
+};
