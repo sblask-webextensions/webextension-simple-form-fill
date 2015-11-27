@@ -40,6 +40,8 @@
         "url": "https://github.com/sblask/firefox-simple-form-fill"
     },
     "permissions": {
+        "multiprocess": true,
+        "private-browsing": true
     },
     "preferences-branch": "simpleformfill",
     "preferences": [
