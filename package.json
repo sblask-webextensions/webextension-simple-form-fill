@@ -1,12 +1,24 @@
 {
-    "name": "simpleformfill",
     "title": "Simple Form Fill",
+    "name": "simpleformfill",
     "id": "simpleformfill@sblask",
-    "icon": "resource://simpleformfill-at-sblask/data/icon.svg",
-    "description": "Enter text into input fields by choosing items from the context menu. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.",
-    "author": "Sebastian Blask",
-    "license": "MIT",
     "version": "1.0.3",
+    "description": "Enter text into input fields by choosing items from the context menu. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.",
+    "main": "index.js",
+    "author": "Sebastian Blask",
+    "engines": {
+        "firefox": ">=38.0a1",
+        "fennec": ">=38.0a1"
+    },
+    "license": "MIT",
+    "icon": "resource://simpleformfill-at-sblask/data/icon.svg",
+    "homepage": "https://addons.mozilla.org/firefox/addon/simple-form-fill/",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sblask/firefox-simple-form-fill"
+    },
+    "permissions": {
+    },
     "preferences-branch": "simpleformfill",
     "preferences": [
         {
