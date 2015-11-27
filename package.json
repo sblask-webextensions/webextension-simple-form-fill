@@ -11,6 +11,14 @@
         "fennec": ">=38.0a1"
     },
     "license": "MIT",
+    "keywords": [
+        "contextmenu",
+        "fill",
+        "form",
+        "jetpack",
+        "notes",
+        "selection"
+    ],
     "icon": "resource://simpleformfill-at-sblask/data/icon.svg",
     "homepage": "https://addons.mozilla.org/firefox/addon/simple-form-fill/",
     "repository": {
