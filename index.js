@@ -1,15 +1,11 @@
 const simplePreferences = require("sdk/simple-prefs");
+const webextension = require("sdk/webextension");
+
 const ui = require("./lib/ui");
 
 let addMenu;
 let fillMenu;
 let panel;
-
-function __showPanel() {
-    if (panel) {
-        panel.show();
-    }
-}
 
 function __fillPanel() {
     if (panel) {
@@ -42,17 +38,34 @@ exports.main = function(options) {
     // save content and hide on save button click
     panel.port.on("save", __save);
 
-    simplePreferences.on("editButton", __showPanel);
     simplePreferences.on("items", __updateMenu);
 
     __updateMenu();
+
+    webextension.startup().then(({browser}) => {
+        browser.runtime.onConnect.addListener(port => {
+            if (port.name === "sync-simple-preferences") {
+                port.postMessage({
+                    items: simplePreferences.prefs.items,
+                });
+                simplePreferences.on("items", () => {
+                    port.postMessage({
+                        items: simplePreferences.prefs.items,
+                    });
+                });
+            }
+        });
+
+        browser.runtime.onMessage.addListener((preferences, _sender, _sendReply) => {
+            simplePreferences.prefs.items = preferences.items;
+        });
+    });
 };
 
 exports.onUnload = function(reason) {
     console.log("Closing down with reason ", reason);
 
     simplePreferences.removeListener("items", __updateMenu);
-    simplePreferences.removeListener("editButton", __showPanel);
 
     if (panel) {
         panel.destroy();

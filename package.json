@@ -22,7 +22,7 @@
     },
     "devDependencies": {
         "eslint": "1.10.x",
-        "jpm": "1.0.x",
+        "jpm": "1.2.x",
         "jscs": "2.6.x"
     },
     "keywords": [
@@ -52,12 +52,7 @@
             "type": "string",
             "value": "",
             "hidden": true
-        },
-        {
-            "type": "control",
-            "label": "Edit",
-            "name": "editButton",
-            "title": "Menu Items"
         }
-    ]
+    ],
+    "hasEmbeddedWebExtension": true
 }
