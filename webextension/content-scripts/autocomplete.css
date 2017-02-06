@@ -1,0 +1,7 @@
+.ui-menu {
+    overflow: hidden;
+    z-index: 999999999;
+}
+.ui-menu .ui-menu-item {
+    padding: 0;
+}
