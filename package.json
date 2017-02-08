@@ -2,7 +2,7 @@
     "title": "Simple Form Fill",
     "name": "simpleformfill",
     "id": "simpleformfill@sblask",
-    "version": "1.0.4",
+    "version": "1.5.0",
     "description": "Enter text into input fields by choosing items from the context menu or choosing from a list of matches while typing. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.",
     "main": "index.js",
     "author": "Sebastian Blask",
