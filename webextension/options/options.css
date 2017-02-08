@@ -11,12 +11,15 @@ fieldset {
 }
 label {
     float: left;
+    line-height: 24px;
+    min-height: 24px;
     padding-right: 1%;
     text-align: right;
     width: 15%;
-    height: 24px;
-    line-height: 24px;
     vertical-align: top;
+}
+input[type=checkbox] {
+    margin: 1px 0 0;
 }
 input[type=submit] {
     margin-top: 15px;
@@ -42,4 +45,5 @@ textarea {
     clear: both;
     height: auto;
     padding: 3px;
+    text-align: left;
 }

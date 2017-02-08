@@ -1,5 +1,6 @@
 "use strict";
 
+const AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const ITEMS_KEY = "items";
 
 browser.browserAction.onClicked.addListener(function() {
@@ -43,6 +44,17 @@ function onUpdated(tabId, changeInfo) {
     }
 }
 
+function onMessage(message) {
+    if (message.text == "refreshAutocomplete") {
+        console.log("Background got request to refresh autocompletes");
+        if (message.requireInizialization) {
+            initializeAutocomplete(message.tabId);
+        } else {
+            sendItemList(message.tabId);
+        }
+    }
+}
+
 function initializeAutocomplete(tabId) {
     browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js"})
         .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js"}); })
@@ -52,18 +64,34 @@ function initializeAutocomplete(tabId) {
         .then(() => { sendItemList(tabId); });
 }
 
-browser.tabs.onUpdated.addListener(onUpdated);
+let autocompleteEnabled = false;
+function enableDisableAutocomplete(enable) {
+    if (enable && !autocompleteEnabled) {
+        console.log("Enable autocomplete");
+        browser.tabs.onUpdated.addListener(onUpdated);
+        browser.runtime.onMessage.addListener(onMessage);
+        browser.tabs.onActivated.addListener(sendItemsToActiveTab);
+        browser.storage.onChanged.addListener(sendItemsToActiveTab);
+        autocompleteEnabled = true;
+    } else if (!enable && autocompleteEnabled) {
+        console.log("Disable autocomplete");
+        browser.tabs.onUpdated.removeListener(onUpdated);
+        browser.runtime.onMessage.removeListener(onMessage);
+        browser.tabs.onActivated.removeListener(sendItemsToActiveTab);
+        browser.storage.onChanged.removeListener(sendItemsToActiveTab);
+        autocompleteEnabled = false;
+    }
+}
 
-browser.runtime.onMessage.addListener(message => {
-    if (message.text == "refreshAutocomplete") {
-        console.log("Background got request to refresh autocompletes");
-        if (message.requireInizialization) {
-            initializeAutocomplete(message.tabId);
-        } else {
-            sendItemList(message.tabId);
-        }
+browser.storage.onChanged.addListener((changes) => {
+    if (changes[AUTOCOMPLETE_KEY]) {
+        console.log("Autocomplete setting changed to " + changes[AUTOCOMPLETE_KEY].newValue);
+        enableDisableAutocomplete(changes[AUTOCOMPLETE_KEY].newValue);
     }
 });
 
-browser.tabs.onActivated.addListener(sendItemsToActiveTab);
-browser.storage.onChanged.addListener(sendItemsToActiveTab);
+browser.storage.local.get([AUTOCOMPLETE_KEY])
+    .then((result) => {
+        autocompleteEnabled = result[AUTOCOMPLETE_KEY];
+        enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
+    });
