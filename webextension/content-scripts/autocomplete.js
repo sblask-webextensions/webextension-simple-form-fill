@@ -1,14 +1,22 @@
 "use strict";
 
-browser.runtime.onMessage.addListener(request => {
-    console.log(`Got ${request.itemList}`)
-    for (let input of document.getElementsByTagName("input")) {
+let inputs = document.getElementsByTagName("input");
+
+function addAutoCompleteToInputs(itemList) {
+    for (let input of inputs) {
         $(input).attr("autocomplete", "on");
         $(input).autocomplete({
-            source: request.itemList,
+            source: itemList,
             autoFocus: true,
-            delay: 300,
+            delay: 100,
             minLength: 1,
         });
+    }
+}
+
+browser.runtime.onMessage.addListener(message => {
+    if (message.itemList) {
+        console.log("Completer got message");
+        addAutoCompleteToInputs(message.itemList);
     }
 });

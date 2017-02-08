@@ -8,7 +8,7 @@ browser.browserAction.onClicked.addListener(function() {
 
 // keep sdk part up to date
 browser.storage.onChanged.addListener((changes) => {
-    if (changes[ITEMS_KEY]) {
+    if (changes[ITEMS_KEY] && changes[ITEMS_KEY].newValue) {
         browser.runtime.sendMessage({items: changes[ITEMS_KEY].newValue});
     }
 });
@@ -23,7 +23,7 @@ port.onMessage.addListener((data) => {
 });
 
 function sendItemList(tabId) {
-    console.log("Sending to ${tabId}")
+    console.log("Send items");
     browser.storage.local.get([ITEMS_KEY])
         .then((result) => { return result[ITEMS_KEY] || ""; })
         .then((itemsString) => { return itemsString ? itemsString.split(/\r?\n/) : []; })
@@ -36,37 +36,34 @@ function sendItemsToActiveTab() {
 }
 
 function onUpdated(tabId, changeInfo) {
-    if (changeInfo.status != "complete") {
-        return;
+    if (changeInfo.status == "complete") {
+        console.log("New page loaded, check for inputs");
+        browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js"})
+            .then(() => { browser.tabs.sendMessage(tabId, {tabId: tabId}); });
     }
+}
 
-    let checkingForInputs = browser.tabs.executeScript(tabId, {
-        code: "document.getElementsByTagName('input').length",
-        allFrames: true,
-    });
-
-    checkingForInputs
-        .then(continueIfGreaterThanZero)
-        .then(() => { return browser.tabs.executeScript(tabId, {allFrames: true, file: "content-scripts/jquery-3.1.1.js"}); })
-        .then(() => { return browser.tabs.executeScript(tabId, {allFrames: true, file: "content-scripts/jquery-ui-1.12.1.js"}); })
-        .then(() => { return browser.tabs.executeScript(tabId, {allFrames: true, file: "content-scripts/autocomplete.js"}); })
-        .then(() => { return browser.tabs.insertCSS(tabId,     {allFrames: true, file: "content-scripts/jquery-ui-1.12.1.css"}); })
-        .then(() => { return browser.tabs.insertCSS(tabId,     {allFrames: true, file: "content-scripts/autocomplete.css"}); })
+function initializeAutocomplete(tabId) {
+    browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js"})
+        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js"}); })
+        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js"}); })
+        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/jquery-ui-1.12.1.css"}); })
+        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/autocomplete.css"}); })
         .then(() => { sendItemList(tabId); });
 }
 
-function continueIfGreaterThanZero(inputCounts) {
-    return new Promise(function(resolve, reject) {
-        let numberOfInputs = inputCounts.reduce((x, y) => x + y);
-        if (numberOfInputs > 0) {
-            resolve();
-        } else {
-            reject();
-        }
-    });
-}
-
 browser.tabs.onUpdated.addListener(onUpdated);
-browser.tabs.onActivated.addListener(sendItemsToActiveTab);
 
+browser.runtime.onMessage.addListener(message => {
+    if (message.text == "refreshAutocomplete") {
+        console.log("Background got request to refresh autocompletes");
+        if (message.requireInizialization) {
+            initializeAutocomplete(message.tabId);
+        } else {
+            sendItemList(message.tabId);
+        }
+    }
+});
+
+browser.tabs.onActivated.addListener(sendItemsToActiveTab);
 browser.storage.onChanged.addListener(sendItemsToActiveTab);
