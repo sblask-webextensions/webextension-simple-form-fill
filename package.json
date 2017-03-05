@@ -13,8 +13,8 @@
     "license": "MIT",
     "scripts": {
         "lint": "eslint index.js lib data test && jscs index.js lib data test",
-        "start": "jpm --binary firefox-trunk run",
-        "start:stable": "jpm run",
+        "start": "GTK_THEME=Greybird jpm --binary firefox-trunk run",
+        "start:stable": "GTK_THEME=Greybird jpm run",
         "test": "jpm --binary firefox-trunk test",
         "test:stable": "jpm test",
         "test:travis": "jpm test --verbose",
