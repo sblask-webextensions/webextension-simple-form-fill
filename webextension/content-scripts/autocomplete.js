@@ -1,9 +1,8 @@
 "use strict";
 
-let inputs = document.getElementsByTagName("input");
-
 function addAutoCompleteToInputs(itemList) {
-    for (let input of inputs) {
+    // getInputs() defined in checker.js
+    for (let input of getInputs()) { //  eslint-disable-line no-undef
         $(input).attr("autocomplete", "on");
         $(input).autocomplete({
             source: itemList,
