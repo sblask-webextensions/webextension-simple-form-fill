@@ -92,6 +92,5 @@ browser.storage.onChanged.addListener((changes) => {
 
 browser.storage.local.get([AUTOCOMPLETE_KEY])
     .then((result) => {
-        autocompleteEnabled = result[AUTOCOMPLETE_KEY];
         enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
     });
