@@ -30,8 +30,6 @@ function getCSS(inputElement) {
     let borderWidth = inputElement.css("border-bottom-width");
     let borderRadius = inputElement.css("border-bottom-left-radius");
 
-    console.log(backgroundColor, color, borderColor, borderStyle, borderWidth, borderRadius);
-
     // inset is default -> no css set
     if (borderStyle == "inset") {
         return "";
