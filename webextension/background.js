@@ -23,15 +23,21 @@ port.onMessage.addListener((data) => {
     }
 });
 
-function sendItemList(tabId) {
-    console.log("Send items");
+function sendItemList(tabId, frameId) {
+    console.log("Send items to tab " + tabId + " and frame " + frameId);
+    let options = {};
+    if (frameId) {
+        options.frameId = frameId;
+    }
+
     browser.storage.local.get([ITEMS_KEY])
-        .then((result) => { return result[ITEMS_KEY] || ""; })
+        .then((result)      => { return result[ITEMS_KEY] || ""; })
         .then((itemsString) => { return itemsString ? itemsString.split(/\r?\n/) : []; })
-        .then((itemList) => { return browser.tabs.sendMessage(tabId, {itemList: itemList}); });
+        .then((itemList)    => { return browser.tabs.sendMessage(tabId, {itemList: itemList}, options); });
 }
 
 function sendItemsToActiveTab() {
+    console.log("Send items to active tab");
     browser.tabs.query({currentWindow: true, active: true})
         .then((matchingTabs) => { sendItemList(matchingTabs[0].id); });
 }
@@ -39,29 +45,30 @@ function sendItemsToActiveTab() {
 function onUpdated(tabId, changeInfo) {
     if (changeInfo.status == "complete") {
         console.log("New page loaded, check for inputs");
-        browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js"})
-            .then(() => { browser.tabs.sendMessage(tabId, {tabId: tabId}); });
+        browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js", allFrames: true});
     }
 }
 
-function onMessage(message) {
+function onMessage(message, sender) {
     if (message.text == "refreshAutocomplete") {
-        console.log("Background got request to refresh autocompletes");
         if (message.requireInizialization) {
-            initializeAutocomplete(message.tabId);
+            console.log("Background got request to initialize autocompletes");
+            initializeAutocomplete(sender.tab.id, sender.frameId);
         } else {
-            sendItemList(message.tabId);
+            console.log("Background got request to refresh autocompletes");
+            sendItemList(sender.tab.id, sender.frameId);
         }
     }
 }
 
-function initializeAutocomplete(tabId) {
-    browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js"})
-        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js"}); })
-        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js"}); })
-        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/jquery-ui-1.12.1.css"}); })
-        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/autocomplete.css"}); })
-        .then(() => { sendItemList(tabId); });
+function initializeAutocomplete(tabId, frameId) {
+    console.log("Initialize autocomplete for tab " + tabId + " and frame " + frameId);
+    browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js", allFrames: true})
+        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js",  frameId: frameId}); })
+        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js",      frameId: frameId}); })
+        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/jquery-ui-1.12.1.css", frameId: frameId}); })
+        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/autocomplete.css",     frameId: frameId}); })
+        .then(() => { sendItemList(tabId, frameId); });
 }
 
 let autocompleteEnabled = false;

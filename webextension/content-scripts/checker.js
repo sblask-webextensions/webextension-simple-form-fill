@@ -16,31 +16,27 @@ function getInputs() {
 }
 
 let existingInputsCount = 0;
-function maybeSendMessage(tabId, requireInizialization) {
+let initializationRequested = false;
+function maybeSendMessage() {
     let newInputsCount = getInputs().length;
     if (existingInputsCount != newInputsCount) {
-        console.log("Checker request refresh of autocomplete");
+        console.log("Checker for " + window.location.href + " request refresh");
         browser.runtime.sendMessage({
             text: "refreshAutocomplete",
-            tabId: tabId,
-            requireInizialization: requireInizialization,
+            requireInizialization: !initializationRequested,
         });
         existingInputsCount = newInputsCount;
+        initializationRequested = true;
     }
 }
 
-browser.runtime.onMessage.addListener(message => {
-    if (message.tabId) {
-        console.log("Checker got message");
-        let observer = new MutationObserver(function(_mutations) {
-            maybeSendMessage(message.tabId, false);
-        });
-
-        observer.observe(document, {
-            childList: true,
-            subtree: true,
-        });
-
-        maybeSendMessage(message.tabId, true);
-    }
+let observer = new MutationObserver(function(_mutations) {
+    maybeSendMessage();
 });
+
+observer.observe(document, {
+    childList: true,
+    subtree: true,
+});
+
+maybeSendMessage();
