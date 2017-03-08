@@ -1,7 +1,8 @@
-.ui-menu {
+.ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill {
     overflow: hidden;
+    margin: 0 !important;
     z-index: 999999999;
 }
-.ui-menu .ui-menu-item {
-    padding: 0;
+.ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item {
+    padding: 0 !important;
 }
