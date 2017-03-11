@@ -1,12 +1,21 @@
 "use strict";
 
-function addAutoCompleteToInputs(itemList) {
+function addAutoCompleteToInputs(message) {
+    if (!message.itemList) {
+        return;
+    }
+
     // getInputs() defined in checker.js
     for (let input of getInputs()) { //  eslint-disable-line no-undef
         let inputElement = $(input);
         inputElement.attr("autocomplete", "on");
+
+        if (message.useTabToChooseItems) {
+            inputElement.keydown(keydownWrapper(inputElement));
+        }
+
         inputElement.autocomplete({
-            source: itemList,
+            source: message.itemList,
             autoFocus: false,
             delay: 100,
             minLength: 1,
@@ -19,6 +28,32 @@ function addAutoCompleteToInputs(itemList) {
             this.menu.element.outerWidth(inputElement.outerWidth());
         };
     }
+}
+
+function keydownWrapper(inputElement) {
+    function keydown(event) {
+        var isOpen = inputElement.autocomplete("widget").is(":visible");
+
+        if (event.keyCode == $.ui.keyCode.TAB && isOpen) {
+            event.stopImmediatePropagation();
+
+            let parameters = undefined;
+            if (event.shiftKey) {
+                parameters = { keyCode: $.ui.keyCode.UP };
+            } else {
+                parameters = { keyCode: $.ui.keyCode.DOWN };
+            }
+
+            inputElement.trigger(jQuery.Event("keydown", parameters));
+        }
+
+        // disable autocomplete's weird handling for shift key
+        if (event.keyCode == 16 && isOpen) {
+            event.stopImmediatePropagation();
+        }
+    }
+
+    return keydown;
 }
 
 function getCSS(inputElement) {
@@ -88,8 +123,5 @@ function getCSS(inputElement) {
 }
 
 browser.runtime.onMessage.addListener(message => {
-    if (message.itemList) {
-        console.log("Autocomplete got item list");
-        addAutoCompleteToInputs(message.itemList);
-    }
+    addAutoCompleteToInputs(message);
 });

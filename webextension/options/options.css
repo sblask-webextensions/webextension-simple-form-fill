@@ -7,6 +7,7 @@ body {
     text-align: center;
 }
 fieldset {
+    border: 1px solid;
     padding: 30px;
 }
 label {
@@ -27,23 +28,26 @@ input[type=submit] {
 input:not([type=submit]) {
     height: 24px;
 }
-select {
-    width: 85%;
-}
 textarea {
     height: 150px;
     padding: 3px;
-    width: 85%;
-}
-.inputElement {
-    border-radius: 3px;
-    border: 1px solid #B3B3B3;
-    clear: both;
-    width: 85%;
 }
 .wrapper {
     clear: both;
     height: auto;
     padding: 3px;
     text-align: left;
+}
+.option {
+    width: 85%;
+}
+fieldset fieldset {
+    width: 85%;
+    border-color: #DDDDDD;
+}
+fieldset fieldset label {
+    width: 20%;
+}
+fieldset fieldset .option {
+    width: 80%;
 }
