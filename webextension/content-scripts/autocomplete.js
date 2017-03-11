@@ -15,7 +15,7 @@ function addAutoCompleteToInputs(message) {
         }
 
         inputElement.autocomplete({
-            source: message.itemList,
+            source: sourceWrapper(message.itemList),
             autoFocus: false,
             delay: 100,
             minLength: 1,
@@ -30,9 +30,28 @@ function addAutoCompleteToInputs(message) {
     }
 }
 
+function sourceWrapper(itemList) {
+    function source(request, response) {
+        let term = $.trim(request.term);
+        let matcher = new RegExp($.ui.autocomplete.escapeRegex(term), "i");
+
+        if (term !== "") {
+            response(
+                $.map(itemList, function(item) {
+                    if (matcher.test(item)) {
+                        return item;
+                    }
+                })
+            );
+        }
+    }
+
+    return source;
+}
+
 function keydownWrapper(inputElement) {
     function keydown(event) {
-        var isOpen = inputElement.autocomplete("widget").is(":visible");
+        let isOpen = inputElement.autocomplete("widget").is(":visible");
 
         if (event.keyCode == $.ui.keyCode.TAB && isOpen) {
             event.stopImmediatePropagation();
