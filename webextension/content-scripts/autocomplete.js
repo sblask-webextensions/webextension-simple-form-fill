@@ -23,9 +23,20 @@ function addAutoCompleteToInputs(message) {
                 "ui-autocomplete": "simple-form-fill",
             },
         });
+
         inputElement.data("ui-autocomplete")._resizeMenu = function() {
             this.menu.element.css("cssText", getCSS(inputElement));
             this.menu.element.outerWidth(inputElement.outerWidth());
+        };
+
+        inputElement.data("ui-autocomplete")._renderItem = function(ul, item) {
+            let liContent = item.label;
+            if (message.commentString && item.label.indexOf(message.commentString) != -1) {
+                let splits = item.label.split(message.commentString);
+                liContent = splits[0] + "<span class='comment'>" + message.commentString + splits[1] + "</span>";
+            }
+
+            return ul.append("<li><div>" + liContent + "</div></li>");
         };
     }
 }

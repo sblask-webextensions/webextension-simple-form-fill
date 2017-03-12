@@ -6,3 +6,9 @@
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item {
     padding: 0 !important;
 }
+.ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item .comment {
+    color: #AAAAAA;
+}
+.ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item .ui-state-active .comment {
+    color: #FFFFFF;
+}
