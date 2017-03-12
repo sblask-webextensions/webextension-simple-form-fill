@@ -30,13 +30,16 @@ function addAutoCompleteToInputs(message) {
         };
 
         inputElement.data("ui-autocomplete")._renderItem = function(ul, item) {
-            let liContent = item.label;
+            let divContent = item.label;
             if (message.commentString && item.label.indexOf(message.commentString) != -1) {
                 let splits = item.label.split(message.commentString);
-                liContent = splits[0] + "<span class='comment'>" + message.commentString + splits[1] + "</span>";
+                divContent = splits[0] + "<span class='comment'>" + message.commentString + splits[1] + "</span>";
             }
 
-            return ul.append("<li><div>" + liContent + "</div></li>");
+            let li = $("<li>").append($("<div>").append(divContent));
+            ul.append(li);
+
+            return li;
         };
     }
 }
