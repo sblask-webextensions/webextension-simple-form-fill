@@ -15,7 +15,7 @@ function addAutoCompleteToInputs(message) {
         }
 
         inputElement.autocomplete({
-            source: sourceWrapper(message.itemList),
+            source: sourceWrapper(message.itemList, message.commentString),
             autoFocus: false,
             delay: 100,
             minLength: 1,
@@ -30,7 +30,7 @@ function addAutoCompleteToInputs(message) {
     }
 }
 
-function sourceWrapper(itemList) {
+function sourceWrapper(itemList, commentString) {
     function source(request, response) {
         let term = $.trim(request.term);
         let matcher = new RegExp($.ui.autocomplete.escapeRegex(term), "i");
@@ -39,7 +39,14 @@ function sourceWrapper(itemList) {
             response(
                 $.map(itemList, function(item) {
                     if (matcher.test(item)) {
-                        return item;
+                        let value = item;
+                        if (commentString) {
+                            value = $.trim(item.split(commentString)[0]);
+                        }
+
+                        if (value) {
+                            return {label: item, value: value};
+                        }
                     }
                 })
             );

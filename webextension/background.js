@@ -1,6 +1,7 @@
 "use strict";
 
 const AUTOCOMPLETE_KEY = "autocompleteEnabled";
+const COMMENT_STRING_KEY = "commentString";
 const ITEMS_KEY = "items";
 const USE_TAB_KEY = "useTabToChooseItems";
 
@@ -31,7 +32,7 @@ function sendOptions(tabId, frameId) {
         options.frameId = frameId;
     }
 
-    browser.storage.local.get([ITEMS_KEY, USE_TAB_KEY])
+    browser.storage.local.get([COMMENT_STRING_KEY, ITEMS_KEY, USE_TAB_KEY])
         .then((result) => { return browser.tabs.sendMessage(tabId, resultToOptions(result), options); });
 }
 
@@ -42,6 +43,7 @@ function resultToOptions(result) {
     }
 
     return {
+        commentString: result[COMMENT_STRING_KEY] || "",
         itemList: items,
         useTabToChooseItems: result[USE_TAB_KEY],
     };

@@ -1,12 +1,14 @@
 function restoreOptions() {
     browser.storage.local.get([
         "autocompleteEnabled",
-        "useTabToChooseItems",
+        "commentString",
         "items",
+        "useTabToChooseItems",
     ], result => {
         document.querySelector("#autocompleteEnabled").checked = result.autocompleteEnabled;
+        document.querySelector("#commentString").value = result.commentString || "";
+        document.querySelector("#items").value = result.items || "";
         document.querySelector("#useTabToChooseItems").checked = result.useTabToChooseItems;
-        document.querySelector("#items").value = result.items;
     });
 }
 
@@ -14,8 +16,9 @@ function saveOptions(event) {
     event.preventDefault();
     browser.storage.local.set({
         autocompleteEnabled: document.querySelector("#autocompleteEnabled").checked,
-        useTabToChooseItems: document.querySelector("#useTabToChooseItems").checked,
+        commentString: document.querySelector("#commentString").value,
         items: document.querySelector("#items").value,
+        useTabToChooseItems: document.querySelector("#useTabToChooseItems").checked,
     });
 }
 
