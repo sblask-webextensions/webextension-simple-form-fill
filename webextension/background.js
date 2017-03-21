@@ -5,6 +5,11 @@ const COMMENT_STRING_KEY = "commentString";
 const ITEMS_KEY = "items";
 const USE_TAB_KEY = "useTabToChooseItems";
 
+const CONTEXT_MENU_ROOT_ID = "root";
+const CONTEXT_MENU_PREFERENCES_ID = "preferences";
+const CONTEXT_MENU_SEPARATOR_ID = "separator";
+const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
+
 browser.browserAction.onClicked.addListener(function() {
     browser.runtime.openOptionsPage();
 });
@@ -25,6 +30,57 @@ port.onMessage.addListener((data) => {
     }
 });
 
+function updateContextMenu(items) {
+    browser.contextMenus.removeAll(() => fillContextMenu(items));
+}
+
+function fillContextMenu(items) {
+    browser.contextMenus.create({
+        id: CONTEXT_MENU_ROOT_ID,
+        title: "Bookmark Dial",
+        contexts: ["all"],
+    });
+    browser.contextMenus.create({
+        id: CONTEXT_MENU_PREFERENCES_ID,
+        parentId: CONTEXT_MENU_ROOT_ID,
+        title: "Preferences",
+        contexts: ["all"],
+    });
+    browser.contextMenus.create({
+        id: CONTEXT_MENU_ADD_SELECTION_ID,
+        parentId: CONTEXT_MENU_ROOT_ID,
+        title: "Add Selection",
+        contexts: ["selection"],
+    });
+
+    if (items.length > 0) {
+        browser.contextMenus.create({
+            id: CONTEXT_MENU_SEPARATOR_ID,
+            parentId: CONTEXT_MENU_ROOT_ID,
+            type: "separator",
+            title: "Add Selection",
+            contexts: ["editable", "selection"],
+        });
+        for (let item of items) {
+            browser.contextMenus.create({
+                parentId: CONTEXT_MENU_ROOT_ID,
+                title: item,
+                contexts: ["editable"],
+            });
+        }
+    }
+}
+
+browser.contextMenus.onClicked.addListener((info, _tab) => {
+    switch (info.menuItemId) {
+        case CONTEXT_MENU_PREFERENCES_ID:
+            browser.runtime.openOptionsPage();
+            break;
+        case CONTEXT_MENU_ADD_SELECTION_ID:
+            break;
+    }
+});
+
 function sendOptions(tabId, frameId) {
     console.log("Send items to tab " + tabId + " and frame " + frameId);
     let options = {};
@@ -37,16 +93,19 @@ function sendOptions(tabId, frameId) {
 }
 
 function resultToOptions(result) {
-    let items = [];
-    if (result[ITEMS_KEY]) {
-        items = result[ITEMS_KEY].split(/\r?\n/);
-    }
-
     return {
         commentString: result[COMMENT_STRING_KEY] || "",
-        itemList: items,
+        itemList: itemStringToList(result[ITEMS_KEY]),
         useTabToChooseItems: result[USE_TAB_KEY],
     };
+}
+
+function itemStringToList(itemString) {
+    if (!itemString) {
+        return [];
+    }
+
+    return itemString.split(/\r?\n/).filter(Boolean);
 }
 
 function sendOptionsToActiveTab() {
@@ -104,13 +163,19 @@ function enableDisableAutocomplete(enable) {
 }
 
 browser.storage.onChanged.addListener((changes) => {
+    if (changes[ITEMS_KEY]) {
+        console.log("Items updated");
+        updateContextMenu(itemStringToList(changes[ITEMS_KEY].newValue));
+    }
+
     if (changes[AUTOCOMPLETE_KEY]) {
         console.log("Autocomplete setting changed to " + changes[AUTOCOMPLETE_KEY].newValue);
         enableDisableAutocomplete(changes[AUTOCOMPLETE_KEY].newValue);
     }
 });
 
-browser.storage.local.get([AUTOCOMPLETE_KEY])
+browser.storage.local.get([ITEMS_KEY, AUTOCOMPLETE_KEY])
     .then((result) => {
+        updateContextMenu(itemStringToList(result[ITEMS_KEY]));
         enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
     });
