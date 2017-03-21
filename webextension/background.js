@@ -37,7 +37,7 @@ function updateContextMenu(items) {
 function fillContextMenu(items) {
     browser.contextMenus.create({
         id: CONTEXT_MENU_ROOT_ID,
-        title: "Bookmark Dial",
+        title: "Simple Form Fill",
         contexts: ["all"],
     });
     browser.contextMenus.create({
