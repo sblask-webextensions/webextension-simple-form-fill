@@ -49,7 +49,7 @@ function fillContextMenu(items) {
     browser.contextMenus.create({
         id: CONTEXT_MENU_ADD_SELECTION_ID,
         parentId: CONTEXT_MENU_ROOT_ID,
-        title: "Add Selection",
+        title: "Add '%s'",
         contexts: ["selection"],
     });
 
@@ -58,8 +58,7 @@ function fillContextMenu(items) {
             id: CONTEXT_MENU_SEPARATOR_ID,
             parentId: CONTEXT_MENU_ROOT_ID,
             type: "separator",
-            title: "Add Selection",
-            contexts: ["editable", "selection"],
+            contexts: ["editable"],
         });
         for (let item of items) {
             browser.contextMenus.create({
@@ -77,9 +76,26 @@ browser.contextMenus.onClicked.addListener((info, _tab) => {
             browser.runtime.openOptionsPage();
             break;
         case CONTEXT_MENU_ADD_SELECTION_ID:
+            addItem(info.selectionText);
             break;
     }
 });
+
+function addItem(item) {
+    browser.storage.local.get([ITEMS_KEY])
+        .then((result) => {
+            let items = result[ITEMS_KEY] || "";
+            if (items) {
+                items += "\n";
+                items += item;
+            } else {
+                items = item;
+            }
+
+            browser.storage.local.set({[ITEMS_KEY]: items});
+        });
+
+}
 
 function sendOptions(tabId, frameId) {
     console.log("Send items to tab " + tabId + " and frame " + frameId);
