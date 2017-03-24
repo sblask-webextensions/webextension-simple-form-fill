@@ -64,9 +64,8 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             addItem(info.selectionText);
             break;
         default:
-            let item = info.menuItemId;
             browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true})
-                .then(() => { return browser.tabs.sendMessage(tab.id, {item: item}); });
+                .then(() => { return browser.tabs.sendMessage(tab.id, {item: info.menuItemId}); });
     }
 });
 
