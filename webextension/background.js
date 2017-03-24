@@ -62,6 +62,7 @@ function fillContextMenu(items) {
         });
         for (let item of items) {
             browser.contextMenus.create({
+                id: item,
                 parentId: CONTEXT_MENU_ROOT_ID,
                 title: item,
                 contexts: ["editable"],
@@ -70,7 +71,7 @@ function fillContextMenu(items) {
     }
 }
 
-browser.contextMenus.onClicked.addListener((info, _tab) => {
+browser.contextMenus.onClicked.addListener((info, tab) => {
     switch (info.menuItemId) {
         case CONTEXT_MENU_PREFERENCES_ID:
             browser.runtime.openOptionsPage();
@@ -78,6 +79,10 @@ browser.contextMenus.onClicked.addListener((info, _tab) => {
         case CONTEXT_MENU_ADD_SELECTION_ID:
             addItem(info.selectionText);
             break;
+        default:
+            let item = info.menuItemId;
+            browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true})
+                .then(() => { return browser.tabs.sendMessage(tab.id, {item: item}); });
     }
 });
 
