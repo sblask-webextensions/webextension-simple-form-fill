@@ -1,58 +1,23 @@
 {
     "title": "Simple Form Fill",
     "name": "simpleformfill",
-    "id": "simpleformfill@sblask",
-    "version": "1.5.0",
-    "description": "Enter text into input fields by choosing items from the context menu or choosing from a list of matches while typing. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.",
-    "main": "index.js",
+    "version": "2.0.0",
     "author": "Sebastian Blask",
-    "engines": {
-        "firefox": ">=38.0a1",
-        "fennec": ">=38.0a1"
-    },
     "license": "MIT",
     "scripts": {
-        "lint": "eslint index.js lib data test && jscs index.js lib data test",
-        "start": "GTK_THEME=Greybird jpm --binary firefox-trunk run",
-        "start:stable": "GTK_THEME=Greybird jpm run",
-        "test": "jpm --binary firefox-trunk test",
-        "test:stable": "jpm test",
-        "test:travis": "jpm test --verbose",
-        "xpi": "jpm xpi"
+        "help": "web-ext --help",
+        "lint": "eslint background.js content-scripts options && jscs background.js content-scripts options",
+        "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
+        "test": "web-ext lint",
+        "build": "web-ext build --artifacts-dir ."
     },
     "devDependencies": {
-        "eslint": "1.10.x",
-        "jpm": "1.2.x",
-        "jscs": "2.6.x"
+        "eslint": "3.13.x",
+        "jscs": "2.6.x",
+        "web-ext": "1.8.x"
     },
-    "keywords": [
-        "contextmenu",
-        "fill",
-        "form",
-        "jetpack",
-        "notes",
-        "selection"
-    ],
-    "icon": "resource://simpleformfill-at-sblask/data/icon.svg",
-    "homepage": "https://addons.mozilla.org/firefox/addon/simple-form-fill/",
     "repository": {
         "type": "git",
         "url": "https://github.com/sblask/firefox-simple-form-fill"
-    },
-    "permissions": {
-        "multiprocess": true,
-        "private-browsing": true
-    },
-    "preferences-branch": "simpleformfill",
-    "preferences": [
-        {
-            "name": "items",
-            "title": "Menu Items",
-            "description": "Menu items separated by new line",
-            "type": "string",
-            "value": "",
-            "hidden": true
-        }
-    ],
-    "hasEmbeddedWebExtension": true
+    }
 }

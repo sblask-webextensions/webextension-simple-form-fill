@@ -3,7 +3,7 @@
     "name": "Simple Form Fill",
     "version": "2.0.0",
     "author": "Sebastian Blask",
-    "description": "Enter text into input fields by choosing items from the context menu or choosing from a list of matches while typing. New items can be added by selecting text and choosing 'Add to Simple Form Fill' or by changing the add-ons' preferences.",
+    "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete. New items can be added through the context menu while having some text selected or by changing the add-ons' preferences.",
     "homepage_url": "https://addons.mozilla.org/firefox/addon/simple-form-fill/",
     "icons": {
         "48": "icon.svg"

@@ -14,22 +14,6 @@ browser.browserAction.onClicked.addListener(function() {
     browser.runtime.openOptionsPage();
 });
 
-// keep sdk part up to date
-browser.storage.onChanged.addListener((changes) => {
-    if (changes[ITEMS_KEY] && changes[ITEMS_KEY].newValue) {
-        browser.runtime.sendMessage({items: changes[ITEMS_KEY].newValue});
-    }
-});
-
-// get data from SDK part
-let port = browser.runtime.connect({name: "sync-simple-preferences"});
-port.onMessage.addListener((data) => {
-    console.log(`Got data from SDK part: ${data}`);
-    if (data) {
-        browser.storage.local.set(data);
-    }
-});
-
 function updateContextMenu(items) {
     browser.contextMenus.removeAll(() => fillContextMenu(items));
 }
