@@ -1,24 +1,24 @@
 {
-    "title": "Simple Form Fill",
-    "name": "simpleformfill",
-    "version": "2.0.0",
     "author": "Sebastian Blask",
-    "license": "MIT",
-    "scripts": {
-        "help": "web-ext --help",
-        "lint": "eslint background.js content-scripts options && jscs background.js content-scripts options",
-        "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
-        "start:stable": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox",
-        "test": "web-ext lint",
-        "build": "web-ext build --artifacts-dir ."
-    },
     "devDependencies": {
         "eslint": "3.13.x",
         "jscs": "2.6.x",
         "web-ext": "1.8.x"
     },
+    "license": "MIT",
+    "name": "simpleformfill",
     "repository": {
         "type": "git",
         "url": "https://github.com/sblask/firefox-simple-form-fill"
-    }
+    },
+    "scripts": {
+        "build": "web-ext build --artifacts-dir .",
+        "help": "web-ext --help",
+        "lint": "eslint background.js content-scripts options && jscs background.js content-scripts options",
+        "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
+        "start:stable": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox",
+        "test": "web-ext lint"
+    },
+    "title": "Simple Form Fill",
+    "version": "2.0.0"
 }
