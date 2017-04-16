@@ -65,7 +65,10 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             break;
         default:
             browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true})
-                .then(() => { return browser.tabs.sendMessage(tab.id, {item: info.menuItemId}); });
+                .then(() => { return browser.storage.local.get([COMMENT_STRING_KEY]); })
+                .then((result) => { return result[COMMENT_STRING_KEY] || ""; })
+                .then((commentString) => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; })
+                .then((cleanedItem) => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); });
     }
 });
 
