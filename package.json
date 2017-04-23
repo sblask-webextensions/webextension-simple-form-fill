@@ -3,7 +3,7 @@
     "devDependencies": {
         "eslint": "3.13.x",
         "jscs": "2.6.x",
-        "web-ext": "1.8.x"
+        "web-ext": "1.9.x"
     },
     "license": "MIT",
     "name": "simpleformfill",
@@ -12,7 +12,7 @@
         "url": "https://github.com/sblask/firefox-simple-form-fill"
     },
     "scripts": {
-        "build": "web-ext build --artifacts-dir .",
+        "build": "web-ext build --artifacts-dir . --ignore-files screenshots --ignore-files package.json",
         "help": "web-ext --help",
         "lint": "eslint background.js content-scripts options && jscs background.js content-scripts options",
         "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
