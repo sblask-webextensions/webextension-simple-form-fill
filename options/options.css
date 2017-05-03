@@ -9,6 +9,7 @@ body {
 fieldset {
     border: 1px solid;
     padding: 30px;
+    text-align: center;
 }
 label {
     float: left;
@@ -16,7 +17,7 @@ label {
     min-height: 24px;
     padding-right: 1%;
     text-align: right;
-    width: 15%;
+    width: 20%;
     vertical-align: top;
 }
 input[type=checkbox] {
@@ -33,21 +34,24 @@ textarea {
     padding: 3px;
 }
 .wrapper {
+    align-items: center;
     clear: both;
+    display: flex;
+    flex-direction: row;
     height: auto;
-    padding: 3px;
+    padding: 8px 2px;
     text-align: left;
 }
 .option {
-    width: 85%;
+    width: 80%;
 }
 fieldset fieldset {
-    width: 85%;
+    width: 80%;
     border-color: #DDDDDD;
 }
 fieldset fieldset label {
-    width: 20%;
+    width: 25%;
 }
 fieldset fieldset .option {
-    width: 80%;
+    width: 75%;
 }
