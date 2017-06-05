@@ -17,7 +17,7 @@
         "default_icon": "icon.svg",
         "default_title": "Simple Form Fill"
     },
-    "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete. New items can be added through the context menu while having some text selected or by changing the add-ons' preferences.",
+    "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete.",
     "homepage_url": "https://addons.mozilla.org/firefox/addon/simple-form-fill/",
     "icons": {
         "128": "icon-128x128.png",
