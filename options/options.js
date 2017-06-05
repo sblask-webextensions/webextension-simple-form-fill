@@ -4,12 +4,14 @@ function restoreOptions() {
         "commentString",
         "items",
         "useTabToChooseItems",
-    ], result => {
-        document.querySelector("#autocompleteEnabled").checked = result.autocompleteEnabled;
-        document.querySelector("#commentString").value = result.commentString || "";
-        document.querySelector("#items").value = result.items || "";
-        document.querySelector("#useTabToChooseItems").checked = result.useTabToChooseItems;
-    });
+    ]).then(
+        result => {
+            document.querySelector("#autocompleteEnabled").checked = result.autocompleteEnabled;
+            document.querySelector("#commentString").value = result.commentString || "";
+            document.querySelector("#items").value = result.items || "";
+            document.querySelector("#useTabToChooseItems").checked = result.useTabToChooseItems;
+        }
+    );
 }
 
 function saveOptions(event) {

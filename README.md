@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/sblask/firefox-simple-form-fill.svg?branch=master)](https://travis-ci.org/sblask/firefox-simple-form-fill)
 
-firefox-simple-form-fill
-========================
+Simple Form Fill
+================
 Enter text into input fields by choosing items from the context menu or
 using the optional autocomplete.
 

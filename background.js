@@ -15,7 +15,7 @@ browser.browserAction.onClicked.addListener(function() {
 });
 
 function updateContextMenu(items) {
-    browser.contextMenus.removeAll(() => fillContextMenu(items));
+    browser.contextMenus.removeAll().then(() => fillContextMenu(items));
 }
 
 function fillContextMenu(items) {
@@ -64,11 +64,15 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             addItem(info.selectionText);
             break;
         default:
-            browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true})
-                .then(() => { return browser.storage.local.get([COMMENT_STRING_KEY]); })
-                .then((result) => { return result[COMMENT_STRING_KEY] || ""; })
-                .then((commentString) => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; })
-                .then((cleanedItem) => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); });
+            chainPromises([
+                ()              => { return browser.tabs.executeScript(tab.id, {file: "browser-polyfill.js", allFrames: true}); },
+                ()              => { return browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true}); },
+                ()              => { return browser.storage.local.get([COMMENT_STRING_KEY]); },
+                (result)        => { return result[COMMENT_STRING_KEY] || ""; },
+                (commentString) => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; },
+                (cleanedItem)   => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); },
+            ]);
+
     }
 });
 
@@ -89,14 +93,16 @@ function addItem(item) {
 }
 
 function sendOptions(tabId, frameId) {
-    console.log("Send items to tab " + tabId + " and frame " + frameId);
+    console.debug("Send items to tab " + tabId + " and frame " + frameId);
     let options = {};
     if (frameId) {
         options.frameId = frameId;
     }
 
-    browser.storage.local.get([COMMENT_STRING_KEY, ITEMS_KEY, USE_TAB_KEY])
-        .then((result) => { return browser.tabs.sendMessage(tabId, resultToOptions(result), options); });
+    chainPromises([
+        ()       => { return browser.storage.local.get([COMMENT_STRING_KEY, ITEMS_KEY, USE_TAB_KEY]); },
+        (result) => { return browser.tabs.sendMessage(tabId, resultToOptions(result), options); },
+    ]);
 }
 
 function resultToOptions(result) {
@@ -116,51 +122,57 @@ function itemStringToList(itemString) {
 }
 
 function sendOptionsToActiveTab() {
-    console.log("Send items to active tab");
+    console.debug("Send items to active tab");
     browser.tabs.query({currentWindow: true, active: true})
         .then((matchingTabs) => { sendOptions(matchingTabs[0].id); });
 }
 
 function onUpdated(tabId, changeInfo) {
     if (changeInfo.status == "complete") {
-        console.log("New page loaded, check for inputs");
-        browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js", allFrames: true});
+        console.debug("New page loaded, check for inputs");
+        chainPromises([
+            () => { return browser.tabs.executeScript(tabId, {file: "browser-polyfill.js", allFrames: true}); },
+            () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js", allFrames: true}); },
+        ]);
     }
 }
 
 function onMessage(message, sender) {
     if (message.text == "refreshAutocomplete") {
         if (message.requireInizialization) {
-            console.log("Background got request to initialize autocompletes");
+            console.debug("Background got request to initialize autocompletes");
             initializeAutocomplete(sender.tab.id, sender.frameId);
         } else {
-            console.log("Background got request to refresh autocompletes");
+            console.debug("Background got request to refresh autocompletes");
             sendOptions(sender.tab.id, sender.frameId);
         }
     }
 }
 
 function initializeAutocomplete(tabId, frameId) {
-    console.log("Initialize autocomplete for tab " + tabId + " and frame " + frameId);
-    browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js", allFrames: true})
-        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js",  frameId: frameId}); })
-        .then(() => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js",      frameId: frameId}); })
-        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/jquery-ui-1.12.1.css", frameId: frameId}); })
-        .then(() => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/autocomplete.css",     frameId: frameId}); })
-        .then(() => { sendOptions(tabId, frameId); });
+    console.debug("Initialize autocomplete for tab " + tabId + " and frame " + frameId);
+    chainPromises([
+        () => { return browser.tabs.executeScript(tabId, {file: "browser-polyfill.js",                  frameId: frameId}); },
+        () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js",      frameId: frameId}); },
+        () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js",  frameId: frameId}); },
+        () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js",      frameId: frameId}); },
+        () => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/jquery-ui-1.12.1.css", frameId: frameId}); },
+        () => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/autocomplete.css",     frameId: frameId}); },
+        () => { return sendOptions(tabId, frameId); },
+    ]);
 }
 
 let autocompleteEnabled = false;
 function enableDisableAutocomplete(enable) {
     if (enable && !autocompleteEnabled) {
-        console.log("Enable autocomplete");
+        console.debug("Enable autocomplete");
         browser.tabs.onUpdated.addListener(onUpdated);
         browser.runtime.onMessage.addListener(onMessage);
         browser.tabs.onActivated.addListener(sendOptionsToActiveTab);
         browser.storage.onChanged.addListener(sendOptionsToActiveTab);
         autocompleteEnabled = true;
     } else if (!enable && autocompleteEnabled) {
-        console.log("Disable autocomplete");
+        console.debug("Disable autocomplete");
         browser.tabs.onUpdated.removeListener(onUpdated);
         browser.runtime.onMessage.removeListener(onMessage);
         browser.tabs.onActivated.removeListener(sendOptionsToActiveTab);
@@ -171,12 +183,12 @@ function enableDisableAutocomplete(enable) {
 
 browser.storage.onChanged.addListener((changes) => {
     if (changes[ITEMS_KEY]) {
-        console.log("Items updated");
+        console.debug("Items updated");
         updateContextMenu(itemStringToList(changes[ITEMS_KEY].newValue));
     }
 
     if (changes[AUTOCOMPLETE_KEY]) {
-        console.log("Autocomplete setting changed to " + changes[AUTOCOMPLETE_KEY].newValue);
+        console.debug("Autocomplete setting changed to " + changes[AUTOCOMPLETE_KEY].newValue);
         enableDisableAutocomplete(changes[AUTOCOMPLETE_KEY].newValue);
     }
 });
@@ -186,3 +198,12 @@ browser.storage.local.get([ITEMS_KEY, AUTOCOMPLETE_KEY])
         updateContextMenu(itemStringToList(result[ITEMS_KEY]));
         enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
     });
+
+function chainPromises(functions) {
+    let promise = Promise.resolve();
+    for (let function_ of functions) {
+        promise = promise.then(function_);
+    }
+
+    return promise.catch((error) => { console.warn(error.message); });
+}

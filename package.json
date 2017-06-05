@@ -12,9 +12,19 @@
         "url": "https://github.com/sblask/firefox-simple-form-fill"
     },
     "scripts": {
-        "build": "web-ext build --artifacts-dir . --ignore-files screenshots --ignore-files package.json",
+        "artifact-create:chrome":  "web-ext build --artifacts-dir . --ignore-files screenshots package.json icon.fodg *.svg",
+        "artifact-create:firefox": "web-ext build --artifacts-dir . --ignore-files screenshots package.json icon.fodg *.png browser-polyfill.js",
+        "artifact-rename:chrome":  "VERSION=$(jq --raw-output '.version' manifest.json); rename \"s/.zip$/-chrome.zip/\"  *$VERSION.zip",
+        "artifact-rename:firefox": "VERSION=$(jq --raw-output '.version' manifest.json); rename \"s/.zip$/-firefox.zip/\" *$VERSION.zip",
+        "build": "git add --all; rm *.zip; npm run modify:chrome && npm run artifact-create:chrome && npm run artifact-rename:chrome && git checkout -- . && npm run modify:firefox && npm run artifact-create:firefox && npm run artifact-rename:firefox && git checkout -- .",
         "help": "web-ext --help",
-        "lint": "eslint background.js content-scripts options && jscs background.js content-scripts options",
+        "lint": "eslint --debug $(find . -not -path '*node_modules*' -name '*.js') && jscs $(find . -not -path '*node_modules*' -name '*.js')",
+        "modify:chrome":  "jq --indent 4 '. | del(.applications) | del(.browser_action.default_icon)' manifest.json | sponge manifest.json",
+        "modify:firefox": "npm run modify:manifest:firefox && npm run modify:remove-polyfill-references",
+        "modify:manifest:firefox": "jq --indent 4 '. | .background.scripts |= map(select(. != \"browser-polyfill.js\")) | if has(\"icons\") then .icons |= {\"48\": \"icon.svg\"} else . end | del(.options_ui.open_in_tab)' manifest.json | sponge manifest.json",
+        "modify:remove-polyfill-references": "sed --in-place --regexp-extended '/\"(\\.\\.\\/)?browser-polyfill.js\"/d' $(find . -not -path '*node_modules*' -name '*.js' -o -name '*.html')",
+        "release": "VERSION=$(jq --raw-output '.version' manifest.json); hub release create $(for file in *$VERSION*.zip; do echo \" -a ${file} \"; done) -m $VERSION $VERSION",
+        "readme": "cat README.md | sed -r 's/\\[.+\\]\\((.+)\\)/\\1/' | sed -r '/\\[/{ N; s/\\[.+\\]\\((.+)\\)/\\n\\1/ }' | sed -r '/```/,/```/d' | vim -",
         "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
         "start:stable": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox",
         "test": "web-ext lint"
