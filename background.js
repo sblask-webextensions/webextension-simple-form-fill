@@ -10,10 +10,6 @@ const CONTEXT_MENU_PREFERENCES_ID = "preferences";
 const CONTEXT_MENU_SEPARATOR_ID = "separator";
 const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
 
-browser.browserAction.onClicked.addListener(function() {
-    browser.runtime.openOptionsPage();
-});
-
 function updateContextMenu(items) {
     browser.contextMenus.removeAll().then(() => fillContextMenu(items));
 }

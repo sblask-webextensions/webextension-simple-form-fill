@@ -3,6 +3,7 @@
 }
 body {
     margin: 0;
+    min-width: 600px;
     padding: 10px;
     text-align: center;
 }
@@ -23,6 +24,9 @@ label {
 input[type=checkbox] {
     margin: 1px 0 0;
 }
+input[type=radio] {
+    float: left;
+}
 input[type=submit] {
     margin-top: 15px;
 }
@@ -42,8 +46,14 @@ textarea {
     padding: 8px 2px;
     text-align: left;
 }
+.wrapper .container {
+    width: 80%;
+}
 .option {
     width: 80%;
+}
+.container .option {
+    width: 100%;
 }
 fieldset fieldset {
     width: 80%;
@@ -51,6 +61,10 @@ fieldset fieldset {
 }
 fieldset fieldset label {
     width: 25%;
+}
+fieldset fieldset label.radio {
+    text-align: left;
+    width: 85%;
 }
 fieldset fieldset .option {
     width: 75%;

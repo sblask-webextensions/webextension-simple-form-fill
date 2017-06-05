@@ -13,8 +13,9 @@
         ]
     },
     "browser_action": {
-        "browser_style": true,
+        "browser_style": false,
         "default_icon": "icon.svg",
+        "default_popup": "options/options.html",
         "default_title": "Simple Form Fill"
     },
     "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete.",
@@ -29,7 +30,6 @@
     "manifest_version": 2,
     "name": "Simple Form Fill",
     "options_ui": {
-        "open_in_tab": true,
         "page": "options/options.html"
     },
     "permissions": [
