@@ -9,43 +9,39 @@
         <form>
             <fieldset>
                 <legend>Options</legend>
-                <div class="wrapper">
-                    <label
-                        for="items"
-                        title="Items will appear in context menu and autocomplete"
+                <label
+                    for="items"
+                    title="Items will appear in context menu and autocomplete"
                     >Items</label>
-                    <textarea id="items" class="option"></textarea>
-                </div>
-                <div class="wrapper">
-                    <label
-                        for="autocomplete"
-                        title="You'll be able to pick items matching your input from a autocomplete popup. En-/Disabling will only affect new pages"
+                <textarea id="items" class="option"></textarea>
+                <label
+                    for="autocomplete"
+                    title="You'll be able to pick items matching your input from a autocomplete popup. En-/Disabling will only affect new pages"
                     >Autocomplete</label>
-                    <fieldset id="autocomplete">
-                        <div class="wrapper">
-                            <label
-                                for="autocompleteEnabled"
-                                title="You'll be able to pick items matching your input from a popup. En-/Disabling will only affect new pages"
+                <fieldset id="autocomplete">
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="autocompleteEnabled"></input>
+                        <label
+                            for="autocompleteEnabled"
+                            title="You'll be able to pick items matching your input from a popup. En-/Disabling will only affect new pages"
                             >Enabled</label>
-                            <input type="checkbox" id="autocompleteEnabled"></input>
-                        </div>
-                        <div class="wrapper">
-                            <label
-                                for="useTabToChooseItems"
-                                title="Tab will behave like Down, Shift-Tab like Up key, but only when the autocomplete popup is open"
+                    </div>
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="useTabToChooseItems"></input>
+                        <label
+                            for="useTabToChooseItems"
+                            title="Tab will behave like Down, Shift-Tab like Up key, but only when the autocomplete popup is open"
                             >Use tab to choose items</label>
-                            <input type="checkbox" id="useTabToChooseItems"></input>
-                        </div>
-                        <div class="wrapper">
-                            <label
-                                for="commentString"
-                                title="Everything after and including this string will be removed from items before filling an input field"
-                            >Comment string</label>
-                            <input type="text" id="commentString" class="option"></input>
-                        </div>
-                    </fieldset>
+                    </div>
+                    <label
+                        for="commentString"
+                        title="Everything after and including this string will be removed from items before filling an input field"
+                        >Comment string</label>
+                    <input type="text" id="commentString" class="option"></input>
+                </fieldset>
+                <div class="controls">
+                    <input type="submit" value="Save">
                 </div>
-                <input type="submit" value="Save">
             </fieldset>
         </form>
         <script src="../browser-polyfill.js"></script>
