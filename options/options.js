@@ -6,10 +6,10 @@ function restoreOptions() {
         "useTabToChooseItems",
     ]).then(
         result => {
-            document.querySelector("#autocompleteEnabled").checked = result.autocompleteEnabled;
-            document.querySelector("#commentString").value = result.commentString || "";
-            document.querySelector("#items").value = result.items || "";
-            document.querySelector("#useTabToChooseItems").checked = result.useTabToChooseItems;
+            setBooleanValue("autocompleteEnabled", result.autocompleteEnabled);
+            setTextValue("commentString", result.commentString || "");
+            setTextValue("items", result.items || "");
+            setBooleanValue("useTabToChooseItems", result.useTabToChooseItems);
         }
     );
 }
@@ -21,6 +21,18 @@ function enableAutosave() {
     for (let input of document.querySelectorAll("input[type=radio], input[type=checkbox]")) {
         input.addEventListener("change", saveOptions);
     }
+}
+
+function setTextValue(elementID, newValue) {
+    let oldValue = document.getElementById(elementID).value;
+
+    if (oldValue !== newValue) {
+        document.getElementById(elementID).value = newValue;
+    }
+}
+
+function setBooleanValue(elementID, newValue) {
+    document.getElementById(elementID).checked = newValue;
 }
 
 function saveOptions(event) {
