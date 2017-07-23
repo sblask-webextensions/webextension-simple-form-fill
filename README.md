@@ -2,11 +2,12 @@
 
 Simple Form Fill
 ================
-Enter text into input fields by choosing items from the context menu or
-using the optional autocomplete.
+Enter text into input fields by choosing configured items from the context menu
+or using the optional autocomplete (not autofill) which suggest items based on
+typed input.
 
 New items can be added through the context menu while having some text selected
-or by changing the add-ons' preferences.
+or in the extension's preferences.
 
 Feedback
 --------
