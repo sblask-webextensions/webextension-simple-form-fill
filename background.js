@@ -10,6 +10,75 @@ const CONTEXT_MENU_PREFERENCES_ID = "preferences";
 const CONTEXT_MENU_SEPARATOR_ID = "separator";
 const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
 
+let itemString = undefined;
+let autocompleteEnabled = undefined;
+let useTabToChooseItems = undefined;
+let commentString = undefined;
+
+browser.storage.local.get([
+    ITEMS_KEY,
+    AUTOCOMPLETE_KEY,
+    USE_TAB_KEY,
+    COMMENT_STRING_KEY,
+])
+    .then(
+        (result) => {
+
+            if (result[ITEMS_KEY] === undefined) {
+                browser.storage.local.set({[ITEMS_KEY]: ""});
+            } else {
+                itemString = result[ITEMS_KEY];
+                updateContextMenu(itemStringToList(itemString));
+            }
+
+            if (result[AUTOCOMPLETE_KEY] === undefined) {
+                browser.storage.local.set({[AUTOCOMPLETE_KEY]: false});
+            } else {
+                enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
+            }
+
+            if (result[USE_TAB_KEY] === undefined) {
+                browser.storage.local.set({[USE_TAB_KEY]: false});
+            } else {
+                useTabToChooseItems = result[USE_TAB_KEY];
+            }
+
+            if (result[COMMENT_STRING_KEY] === undefined) {
+                browser.storage.local.set({[COMMENT_STRING_KEY]: ""});
+            } else {
+                commentString = result[COMMENT_STRING_KEY];
+            }
+
+        }
+    );
+
+browser.storage.onChanged.addListener(
+    (changes) => {
+
+        if (changes[ITEMS_KEY]) {
+            itemString = changes[ITEMS_KEY].newValue;
+            updateContextMenu(itemStringToList(itemString));
+        }
+
+        if (changes[AUTOCOMPLETE_KEY]) {
+            enableDisableAutocomplete(changes[AUTOCOMPLETE_KEY].newValue);
+        }
+
+        if (changes[USE_TAB_KEY]) {
+            useTabToChooseItems = changes[USE_TAB_KEY].newValue;
+        }
+
+        if (changes[COMMENT_STRING_KEY]) {
+            commentString = changes[COMMENT_STRING_KEY].newValue;
+        }
+
+        if (autocompleteEnabled) {
+            sendOptionsToActiveTab();
+        }
+
+    }
+);
+
 function updateContextMenu(items) {
     browser.contextMenus.removeAll().then(() => fillContextMenu(items));
 }
@@ -61,31 +130,24 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             break;
         default:
             chainPromises([
-                ()              => { return browser.tabs.executeScript(tab.id, {file: "browser-polyfill.js", allFrames: true}); },
-                ()              => { return browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true}); },
-                ()              => { return browser.storage.local.get([COMMENT_STRING_KEY]); },
-                (result)        => { return result[COMMENT_STRING_KEY] || ""; },
-                (commentString) => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; },
-                (cleanedItem)   => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); },
+                ()            => { return browser.tabs.executeScript(tab.id, {file: "browser-polyfill.js", allFrames: true}); },
+                ()            => { return browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true}); },
+                ()            => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; },
+                (cleanedItem) => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); },
             ]);
 
     }
 });
 
 function addItem(item) {
-    browser.storage.local.get([ITEMS_KEY])
-        .then((result) => {
-            let items = result[ITEMS_KEY] || "";
-            if (items) {
-                items += "\n";
-                items += item;
-            } else {
-                items = item;
-            }
+    if (itemString) {
+        itemString += "\n";
+        itemString += item;
+    } else {
+        itemString = item;
+    }
 
-            browser.storage.local.set({[ITEMS_KEY]: items});
-        });
-
+    browser.storage.local.set({[ITEMS_KEY]: itemString});
 }
 
 function sendOptions(tabId, frameId) {
@@ -95,18 +157,15 @@ function sendOptions(tabId, frameId) {
         options.frameId = frameId;
     }
 
-    chainPromises([
-        ()       => { return browser.storage.local.get([COMMENT_STRING_KEY, ITEMS_KEY, USE_TAB_KEY]); },
-        (result) => { return browser.tabs.sendMessage(tabId, resultToOptions(result), options); },
-    ]);
-}
-
-function resultToOptions(result) {
-    return {
-        commentString: result[COMMENT_STRING_KEY] || "",
-        itemList: itemStringToList(result[ITEMS_KEY]),
-        useTabToChooseItems: result[USE_TAB_KEY],
-    };
+    browser.tabs.sendMessage(
+        tabId,
+        {
+            commentString,
+            itemList: itemStringToList(itemString),
+            useTabToChooseItems,
+        },
+        options
+    );
 }
 
 function itemStringToList(itemString) {
@@ -158,42 +217,21 @@ function initializeAutocomplete(tabId, frameId) {
     ]);
 }
 
-let autocompleteEnabled = false;
 function enableDisableAutocomplete(enable) {
     if (enable && !autocompleteEnabled) {
         console.debug("Enable autocomplete");
         browser.tabs.onUpdated.addListener(onUpdated);
         browser.runtime.onMessage.addListener(onMessage);
         browser.tabs.onActivated.addListener(sendOptionsToActiveTab);
-        browser.storage.onChanged.addListener(sendOptionsToActiveTab);
         autocompleteEnabled = true;
     } else if (!enable && autocompleteEnabled) {
         console.debug("Disable autocomplete");
         browser.tabs.onUpdated.removeListener(onUpdated);
         browser.runtime.onMessage.removeListener(onMessage);
         browser.tabs.onActivated.removeListener(sendOptionsToActiveTab);
-        browser.storage.onChanged.removeListener(sendOptionsToActiveTab);
         autocompleteEnabled = false;
     }
 }
-
-browser.storage.onChanged.addListener((changes) => {
-    if (changes[ITEMS_KEY]) {
-        console.debug("Items updated");
-        updateContextMenu(itemStringToList(changes[ITEMS_KEY].newValue));
-    }
-
-    if (changes[AUTOCOMPLETE_KEY]) {
-        console.debug("Autocomplete setting changed to " + changes[AUTOCOMPLETE_KEY].newValue);
-        enableDisableAutocomplete(changes[AUTOCOMPLETE_KEY].newValue);
-    }
-});
-
-browser.storage.local.get([ITEMS_KEY, AUTOCOMPLETE_KEY])
-    .then((result) => {
-        updateContextMenu(itemStringToList(result[ITEMS_KEY]));
-        enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
-    });
 
 function chainPromises(functions) {
     let promise = Promise.resolve();
@@ -201,5 +239,5 @@ function chainPromises(functions) {
         promise = promise.then(function_);
     }
 
-    return promise.catch((error) => { console.warn(error.message); });
+    return promise.catch((error) => { console.warn(error.message, error.stack); });
 }
