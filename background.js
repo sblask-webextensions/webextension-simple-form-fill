@@ -4,6 +4,7 @@ const ITEMS_KEY = "items";
 const AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const USE_TAB_KEY = "useTabToChooseItems";
 const COMMENT_STRING_KEY = "commentString";
+const MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
 
 const CONTEXT_MENU_ROOT_ID = "root";
 const CONTEXT_MENU_PREFERENCES_ID = "preferences";
@@ -14,12 +15,14 @@ let itemString = undefined;
 let autocompleteEnabled = undefined;
 let useTabToChooseItems = undefined;
 let commentString = undefined;
+let minimumCharacterCount = undefined;
 
 browser.storage.local.get([
     ITEMS_KEY,
     AUTOCOMPLETE_KEY,
     USE_TAB_KEY,
     COMMENT_STRING_KEY,
+    MINIMUM_CHARACTER_COUNT_KEY,
 ])
     .then(
         (result) => {
@@ -49,6 +52,12 @@ browser.storage.local.get([
                 commentString = result[COMMENT_STRING_KEY];
             }
 
+            if (result[MINIMUM_CHARACTER_COUNT_KEY] === undefined) {
+                browser.storage.local.set({[MINIMUM_CHARACTER_COUNT_KEY]: 1});
+            } else {
+                minimumCharacterCount = result[MINIMUM_CHARACTER_COUNT_KEY];
+            }
+
         }
     );
 
@@ -70,6 +79,10 @@ browser.storage.onChanged.addListener(
 
         if (changes[COMMENT_STRING_KEY]) {
             commentString = changes[COMMENT_STRING_KEY].newValue;
+        }
+
+        if (changes[MINIMUM_CHARACTER_COUNT_KEY]) {
+            minimumCharacterCount = changes[MINIMUM_CHARACTER_COUNT_KEY].newValue;
         }
 
         if (autocompleteEnabled) {
@@ -163,6 +176,7 @@ function sendOptions(tabId, frameId) {
             commentString,
             itemList: itemStringToList(itemString),
             useTabToChooseItems,
+            minimumCharacterCount,
         },
         options
     );

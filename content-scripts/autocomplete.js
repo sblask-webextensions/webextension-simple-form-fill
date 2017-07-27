@@ -18,7 +18,7 @@ function addAutoCompleteToInputs(message) {
             source: sourceWrapper(message.itemList, message.commentString),
             autoFocus: false,
             delay: 100,
-            minLength: 1,
+            minLength: message.minimumCharacterCount,
             classes: {
                 "ui-autocomplete": "simple-form-fill",
             },
