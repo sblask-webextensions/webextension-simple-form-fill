@@ -1,15 +1,15 @@
 function restoreOptions() {
     browser.storage.local.get([
-        "autocompleteEnabled",
-        "commentString",
         "items",
+        "autocompleteEnabled",
         "useTabToChooseItems",
+        "commentString",
     ]).then(
         result => {
+            setTextValue("items", result.items);
             setBooleanValue("autocompleteEnabled", result.autocompleteEnabled);
-            setTextValue("commentString", result.commentString || "");
-            setTextValue("items", result.items || "");
             setBooleanValue("useTabToChooseItems", result.useTabToChooseItems);
+            setTextValue("commentString", result.commentString);
         }
     );
 }
@@ -38,10 +38,10 @@ function setBooleanValue(elementID, newValue) {
 function saveOptions(event) {
     event.preventDefault();
     browser.storage.local.set({
-        autocompleteEnabled: document.querySelector("#autocompleteEnabled").checked,
-        commentString: document.querySelector("#commentString").value,
         items: document.querySelector("#items").value,
+        autocompleteEnabled: document.querySelector("#autocompleteEnabled").checked,
         useTabToChooseItems: document.querySelector("#useTabToChooseItems").checked,
+        commentString: document.querySelector("#commentString").value,
     });
 }
 

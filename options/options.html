@@ -8,16 +8,19 @@
     <body>
         <form>
             <fieldset>
+
                 <label
                     for="items"
                     title="Items will appear in context menu and autocomplete"
                     >Items</label>
                 <textarea id="items"></textarea>
+
                 <label
                     for="autocomplete"
                     title="You'll be able to pick items matching your input from a autocomplete popup. En-/Disabling will only affect new pages"
                     >Autocomplete</label>
                 <fieldset id="autocomplete">
+
                     <div class="box-wrapper">
                         <input type="checkbox" id="autocompleteEnabled"></input>
                         <label
@@ -25,6 +28,7 @@
                             title="You'll be able to pick items matching your input from a popup. En-/Disabling will only affect new pages"
                             >Enabled</label>
                     </div>
+
                     <div class="box-wrapper">
                         <input type="checkbox" id="useTabToChooseItems"></input>
                         <label
@@ -38,6 +42,7 @@
                         title="Everything after and including this string will be removed from items before filling an input field"
                         >Comment string</label>
                     <input type="text" id="commentString"></input>
+
                 </fieldset>
                 <legend>Options</legend>
             </fieldset>

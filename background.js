@@ -1,9 +1,9 @@
 "use strict";
 
-const AUTOCOMPLETE_KEY = "autocompleteEnabled";
-const COMMENT_STRING_KEY = "commentString";
 const ITEMS_KEY = "items";
+const AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const USE_TAB_KEY = "useTabToChooseItems";
+const COMMENT_STRING_KEY = "commentString";
 
 const CONTEXT_MENU_ROOT_ID = "root";
 const CONTEXT_MENU_PREFERENCES_ID = "preferences";
