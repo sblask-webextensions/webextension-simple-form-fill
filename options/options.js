@@ -3,6 +3,7 @@ function restoreOptions() {
         "items",
         "autocompleteEnabled",
         "useTabToChooseItems",
+        "matchOnlyAtBeginning",
         "commentString",
         "minimumCharacterCount",
     ]).then(
@@ -10,6 +11,7 @@ function restoreOptions() {
             setTextValue("items", result.items);
             setBooleanValue("autocompleteEnabled", result.autocompleteEnabled);
             setBooleanValue("useTabToChooseItems", result.useTabToChooseItems);
+            setBooleanValue("matchOnlyAtBeginning", result.matchOnlyAtBeginning);
             setTextValue("commentString", result.commentString);
             setTextValue("minimumCharacterCount", result.minimumCharacterCount);
         }
@@ -43,6 +45,7 @@ function saveOptions(event) {
         items: document.querySelector("#items").value,
         autocompleteEnabled: document.querySelector("#autocompleteEnabled").checked,
         useTabToChooseItems: document.querySelector("#useTabToChooseItems").checked,
+        matchOnlyAtBeginning: document.querySelector("#matchOnlyAtBeginning").checked,
         commentString: document.querySelector("#commentString").value,
         minimumCharacterCount: parseInt(document.querySelector("#minimumCharacterCount").value),
     });

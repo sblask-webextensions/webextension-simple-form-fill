@@ -3,6 +3,7 @@
 const ITEMS_KEY = "items";
 const AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const USE_TAB_KEY = "useTabToChooseItems";
+const MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const COMMENT_STRING_KEY = "commentString";
 const MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
 
@@ -14,6 +15,7 @@ const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
 let itemString = undefined;
 let autocompleteEnabled = undefined;
 let useTabToChooseItems = undefined;
+let matchOnlyAtBeginning = undefined;
 let commentString = undefined;
 let minimumCharacterCount = undefined;
 
@@ -21,6 +23,7 @@ browser.storage.local.get([
     ITEMS_KEY,
     AUTOCOMPLETE_KEY,
     USE_TAB_KEY,
+    MATCH_ONLY_AT_BEGINNING,
     COMMENT_STRING_KEY,
     MINIMUM_CHARACTER_COUNT_KEY,
 ])
@@ -44,6 +47,12 @@ browser.storage.local.get([
                 browser.storage.local.set({[USE_TAB_KEY]: false});
             } else {
                 useTabToChooseItems = result[USE_TAB_KEY];
+            }
+
+            if (result[MATCH_ONLY_AT_BEGINNING] === undefined) {
+                browser.storage.local.set({[MATCH_ONLY_AT_BEGINNING]: false});
+            } else {
+                matchOnlyAtBeginning = result[MATCH_ONLY_AT_BEGINNING];
             }
 
             if (result[COMMENT_STRING_KEY] === undefined) {
@@ -75,6 +84,10 @@ browser.storage.onChanged.addListener(
 
         if (changes[USE_TAB_KEY]) {
             useTabToChooseItems = changes[USE_TAB_KEY].newValue;
+        }
+
+        if (changes[MATCH_ONLY_AT_BEGINNING]) {
+            matchOnlyAtBeginning = changes[MATCH_ONLY_AT_BEGINNING].newValue;
         }
 
         if (changes[COMMENT_STRING_KEY]) {
@@ -177,6 +190,7 @@ function sendOptions(tabId, frameId) {
             itemList: itemStringToList(itemString),
             useTabToChooseItems,
             minimumCharacterCount,
+            matchOnlyAtBeginning,
         },
         options
     );
