@@ -110,7 +110,7 @@ function getCSS(inputElement) {
         return "";
     }
 
-    if (backgroundColor == "transparent" || backgroundColor.match(/rgba\((\d+[,\s]*){3}0\s*\)/)) {
+    if (backgroundColor == "transparent" || backgroundColor.match(/rgba\(/)) {
         backgroundColor = "#ffffff";
     }
 
