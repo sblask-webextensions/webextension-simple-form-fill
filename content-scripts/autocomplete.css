@@ -6,6 +6,8 @@
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item {
     cursor: pointer;
+    list-style: none;
+    margin: auto;
     padding: 0 !important;
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item .ui-menu-item-wrapper {
