@@ -113,13 +113,13 @@ function fillContextMenu(items) {
     browser.contextMenus.create({
         id: CONTEXT_MENU_ROOT_ID,
         title: "Simple Form Fill",
-        contexts: ["all"],
+        contexts: ["page", "frame", "selection", "editable"],
     });
     browser.contextMenus.create({
         id: CONTEXT_MENU_PREFERENCES_ID,
         parentId: CONTEXT_MENU_ROOT_ID,
         title: "Preferences",
-        contexts: ["all"],
+        contexts: ["page", "frame", "selection", "editable"],
     });
     browser.contextMenus.create({
         id: CONTEXT_MENU_ADD_SELECTION_ID,
