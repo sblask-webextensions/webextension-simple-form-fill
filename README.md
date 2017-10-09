@@ -9,6 +9,11 @@ typed input.
 New items can be added through the context menu while having some text selected
 or in the extension's preferences.
 
+Privacy Policy
+--------------
+
+This extension does not collect or send data of any kind to third parties.
+
 Feedback
 --------
 
