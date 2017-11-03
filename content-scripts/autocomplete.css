@@ -1,3 +1,6 @@
+.ui-helper-hidden-accessible {
+    display: none;
+}
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill {
     overflow: hidden;
     margin: 0 !important;
