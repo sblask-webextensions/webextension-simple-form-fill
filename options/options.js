@@ -1,19 +1,26 @@
+const OPTION_ITEMS_KEY = "items";
+const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
+const OPTION_USE_TAB_KEY = "useTabToChooseItems";
+const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
+const OPTION_COMMENT_STRING_KEY = "commentString";
+const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
+
 function restoreOptions() {
     browser.storage.local.get([
-        "items",
-        "autocompleteEnabled",
-        "useTabToChooseItems",
-        "matchOnlyAtBeginning",
-        "commentString",
-        "minimumCharacterCount",
+        OPTION_ITEMS_KEY,
+        OPTION_AUTOCOMPLETE_KEY,
+        OPTION_USE_TAB_KEY,
+        OPTION_MATCH_ONLY_AT_BEGINNING,
+        OPTION_COMMENT_STRING_KEY,
+        OPTION_MINIMUM_CHARACTER_COUNT_KEY,
     ]).then(
         result => {
-            setTextValue("items", result.items);
-            setBooleanValue("autocompleteEnabled", result.autocompleteEnabled);
-            setBooleanValue("useTabToChooseItems", result.useTabToChooseItems);
-            setBooleanValue("matchOnlyAtBeginning", result.matchOnlyAtBeginning);
-            setTextValue("commentString", result.commentString);
-            setTextValue("minimumCharacterCount", result.minimumCharacterCount);
+            setTextValue("items", result[OPTION_ITEMS_KEY]);
+            setBooleanValue("autocompleteEnabled", result[OPTION_AUTOCOMPLETE_KEY]);
+            setBooleanValue("useTabToChooseItems", result[OPTION_USE_TAB_KEY]);
+            setBooleanValue("matchOnlyAtBeginning", result[OPTION_MATCH_ONLY_AT_BEGINNING]);
+            setTextValue("commentString", result[OPTION_COMMENT_STRING_KEY]);
+            setTextValue("minimumCharacterCount", result[OPTION_MINIMUM_CHARACTER_COUNT_KEY]);
         }
     );
 }
@@ -42,12 +49,12 @@ function setBooleanValue(elementID, newValue) {
 function saveOptions(event) {
     event.preventDefault();
     browser.storage.local.set({
-        items: document.querySelector("#items").value,
-        autocompleteEnabled: document.querySelector("#autocompleteEnabled").checked,
-        useTabToChooseItems: document.querySelector("#useTabToChooseItems").checked,
-        matchOnlyAtBeginning: document.querySelector("#matchOnlyAtBeginning").checked,
-        commentString: document.querySelector("#commentString").value,
-        minimumCharacterCount: parseInt(document.querySelector("#minimumCharacterCount").value),
+        [OPTION_ITEMS_KEY]: document.querySelector("#items").value,
+        [OPTION_AUTOCOMPLETE_KEY]: document.querySelector("#autocompleteEnabled").checked,
+        [OPTION_USE_TAB_KEY]: document.querySelector("#useTabToChooseItems").checked,
+        [OPTION_MATCH_ONLY_AT_BEGINNING]: document.querySelector("#matchOnlyAtBeginning").checked,
+        [OPTION_COMMENT_STRING_KEY]: document.querySelector("#commentString").value,
+        [OPTION_MINIMUM_CHARACTER_COUNT_KEY]: parseInt(document.querySelector("#minimumCharacterCount").value),
     });
 }
 

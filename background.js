@@ -1,11 +1,11 @@
 "use strict";
 
-const ITEMS_KEY = "items";
-const AUTOCOMPLETE_KEY = "autocompleteEnabled";
-const USE_TAB_KEY = "useTabToChooseItems";
-const MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
-const COMMENT_STRING_KEY = "commentString";
-const MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
+const OPTION_ITEMS_KEY = "items";
+const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
+const OPTION_USE_TAB_KEY = "useTabToChooseItems";
+const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
+const OPTION_COMMENT_STRING_KEY = "commentString";
+const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
 
 const CONTEXT_MENU_ROOT_ID = "root";
 const CONTEXT_MENU_PREFERENCES_ID = "preferences";
@@ -20,51 +20,51 @@ let commentString = undefined;
 let minimumCharacterCount = undefined;
 
 browser.storage.local.get([
-    ITEMS_KEY,
-    AUTOCOMPLETE_KEY,
-    USE_TAB_KEY,
-    MATCH_ONLY_AT_BEGINNING,
-    COMMENT_STRING_KEY,
-    MINIMUM_CHARACTER_COUNT_KEY,
+    OPTION_ITEMS_KEY,
+    OPTION_AUTOCOMPLETE_KEY,
+    OPTION_USE_TAB_KEY,
+    OPTION_MATCH_ONLY_AT_BEGINNING,
+    OPTION_COMMENT_STRING_KEY,
+    OPTION_MINIMUM_CHARACTER_COUNT_KEY,
 ])
     .then(
         (result) => {
 
-            if (result[ITEMS_KEY] === undefined) {
-                browser.storage.local.set({[ITEMS_KEY]: ""});
+            if (result[OPTION_ITEMS_KEY] === undefined) {
+                browser.storage.local.set({[OPTION_ITEMS_KEY]: ""});
             } else {
-                itemString = result[ITEMS_KEY];
+                itemString = result[OPTION_ITEMS_KEY];
                 updateContextMenu(itemStringToList(itemString));
             }
 
-            if (result[AUTOCOMPLETE_KEY] === undefined) {
-                browser.storage.local.set({[AUTOCOMPLETE_KEY]: false});
+            if (result[OPTION_AUTOCOMPLETE_KEY] === undefined) {
+                browser.storage.local.set({[OPTION_AUTOCOMPLETE_KEY]: false});
             } else {
-                enableDisableAutocomplete(result[AUTOCOMPLETE_KEY]);
+                enableDisableAutocomplete(result[OPTION_AUTOCOMPLETE_KEY]);
             }
 
-            if (result[USE_TAB_KEY] === undefined) {
-                browser.storage.local.set({[USE_TAB_KEY]: false});
+            if (result[OPTION_USE_TAB_KEY] === undefined) {
+                browser.storage.local.set({[OPTION_USE_TAB_KEY]: false});
             } else {
-                useTabToChooseItems = result[USE_TAB_KEY];
+                useTabToChooseItems = result[OPTION_USE_TAB_KEY];
             }
 
-            if (result[MATCH_ONLY_AT_BEGINNING] === undefined) {
-                browser.storage.local.set({[MATCH_ONLY_AT_BEGINNING]: false});
+            if (result[OPTION_MATCH_ONLY_AT_BEGINNING] === undefined) {
+                browser.storage.local.set({[OPTION_MATCH_ONLY_AT_BEGINNING]: false});
             } else {
-                matchOnlyAtBeginning = result[MATCH_ONLY_AT_BEGINNING];
+                matchOnlyAtBeginning = result[OPTION_MATCH_ONLY_AT_BEGINNING];
             }
 
-            if (result[COMMENT_STRING_KEY] === undefined) {
-                browser.storage.local.set({[COMMENT_STRING_KEY]: ""});
+            if (result[OPTION_COMMENT_STRING_KEY] === undefined) {
+                browser.storage.local.set({[OPTION_COMMENT_STRING_KEY]: ""});
             } else {
-                commentString = result[COMMENT_STRING_KEY];
+                commentString = result[OPTION_COMMENT_STRING_KEY];
             }
 
-            if (result[MINIMUM_CHARACTER_COUNT_KEY] === undefined) {
-                browser.storage.local.set({[MINIMUM_CHARACTER_COUNT_KEY]: 1});
+            if (result[OPTION_MINIMUM_CHARACTER_COUNT_KEY] === undefined) {
+                browser.storage.local.set({[OPTION_MINIMUM_CHARACTER_COUNT_KEY]: 1});
             } else {
-                minimumCharacterCount = result[MINIMUM_CHARACTER_COUNT_KEY];
+                minimumCharacterCount = result[OPTION_MINIMUM_CHARACTER_COUNT_KEY];
             }
 
         }
@@ -73,29 +73,29 @@ browser.storage.local.get([
 browser.storage.onChanged.addListener(
     (changes) => {
 
-        if (changes[ITEMS_KEY]) {
-            itemString = changes[ITEMS_KEY].newValue;
+        if (changes[OPTION_ITEMS_KEY]) {
+            itemString = changes[OPTION_ITEMS_KEY].newValue;
             updateContextMenu(itemStringToList(itemString));
         }
 
-        if (changes[AUTOCOMPLETE_KEY]) {
-            enableDisableAutocomplete(changes[AUTOCOMPLETE_KEY].newValue);
+        if (changes[OPTION_AUTOCOMPLETE_KEY]) {
+            enableDisableAutocomplete(changes[OPTION_AUTOCOMPLETE_KEY].newValue);
         }
 
-        if (changes[USE_TAB_KEY]) {
-            useTabToChooseItems = changes[USE_TAB_KEY].newValue;
+        if (changes[OPTION_USE_TAB_KEY]) {
+            useTabToChooseItems = changes[OPTION_USE_TAB_KEY].newValue;
         }
 
-        if (changes[MATCH_ONLY_AT_BEGINNING]) {
-            matchOnlyAtBeginning = changes[MATCH_ONLY_AT_BEGINNING].newValue;
+        if (changes[OPTION_MATCH_ONLY_AT_BEGINNING]) {
+            matchOnlyAtBeginning = changes[OPTION_MATCH_ONLY_AT_BEGINNING].newValue;
         }
 
-        if (changes[COMMENT_STRING_KEY]) {
-            commentString = changes[COMMENT_STRING_KEY].newValue;
+        if (changes[OPTION_COMMENT_STRING_KEY]) {
+            commentString = changes[OPTION_COMMENT_STRING_KEY].newValue;
         }
 
-        if (changes[MINIMUM_CHARACTER_COUNT_KEY]) {
-            minimumCharacterCount = changes[MINIMUM_CHARACTER_COUNT_KEY].newValue;
+        if (changes[OPTION_MINIMUM_CHARACTER_COUNT_KEY]) {
+            minimumCharacterCount = changes[OPTION_MINIMUM_CHARACTER_COUNT_KEY].newValue;
         }
 
         if (autocompleteEnabled) {
@@ -173,7 +173,7 @@ function addItem(item) {
         itemString = item;
     }
 
-    browser.storage.local.set({[ITEMS_KEY]: itemString});
+    browser.storage.local.set({[OPTION_ITEMS_KEY]: itemString});
 }
 
 function sendOptions(tabId, frameId) {
