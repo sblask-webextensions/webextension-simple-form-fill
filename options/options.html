@@ -16,6 +16,21 @@
                 <textarea id="items"></textarea>
 
                 <label
+                    for="contextmenu"
+                    >Context Menu</label>
+                <fieldset id="contextmenu">
+
+                    <div class="box-wrapper">
+                        <input type="checkbox" id="contextmenuEnabled"></input>
+                        <label
+                            for="contextmenuEnabled"
+                            title="Access preferences, add items from selection and insert items on right click"
+                            >Enabled</label>
+                    </div>
+
+                </fieldset>
+
+                <label
                     for="autocomplete"
                     title="You'll be able to pick items matching your input from a autocomplete popup. En-/Disabling will only affect new pages"
                     >Autocomplete</label>
@@ -59,6 +74,7 @@
                     <input type="number" min="1" id="minimumCharacterCount"></input>
 
                 </fieldset>
+
                 <legend>Options</legend>
             </fieldset>
         </form>

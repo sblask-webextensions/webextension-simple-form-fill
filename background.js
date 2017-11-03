@@ -1,6 +1,7 @@
 "use strict";
 
 const OPTION_ITEMS_KEY = "items";
+const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const OPTION_USE_TAB_KEY = "useTabToChooseItems";
 const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
@@ -13,6 +14,7 @@ const CONTEXT_MENU_SEPARATOR_ID = "separator";
 const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
 
 let itemString = undefined;
+let contextmenuEnabled = undefined;
 let autocompleteEnabled = undefined;
 let useTabToChooseItems = undefined;
 let matchOnlyAtBeginning = undefined;
@@ -21,6 +23,7 @@ let minimumCharacterCount = undefined;
 
 browser.storage.local.get([
     OPTION_ITEMS_KEY,
+    OPTION_CONTEXTMENU_KEY,
     OPTION_AUTOCOMPLETE_KEY,
     OPTION_USE_TAB_KEY,
     OPTION_MATCH_ONLY_AT_BEGINNING,
@@ -34,8 +37,15 @@ browser.storage.local.get([
                 browser.storage.local.set({[OPTION_ITEMS_KEY]: ""});
             } else {
                 itemString = result[OPTION_ITEMS_KEY];
-                updateContextMenu(itemStringToList(itemString));
             }
+
+            if (result[OPTION_CONTEXTMENU_KEY] === undefined) {
+                browser.storage.local.set({[OPTION_CONTEXTMENU_KEY]: true});
+            } else {
+                contextmenuEnabled = result[OPTION_AUTOCOMPLETE_KEY];
+            }
+
+            updateContextMenu();
 
             if (result[OPTION_AUTOCOMPLETE_KEY] === undefined) {
                 browser.storage.local.set({[OPTION_AUTOCOMPLETE_KEY]: false});
@@ -75,8 +85,13 @@ browser.storage.onChanged.addListener(
 
         if (changes[OPTION_ITEMS_KEY]) {
             itemString = changes[OPTION_ITEMS_KEY].newValue;
-            updateContextMenu(itemStringToList(itemString));
         }
+
+        if (changes[OPTION_CONTEXTMENU_KEY]) {
+            contextmenuEnabled = changes[OPTION_CONTEXTMENU_KEY].newValue;
+        }
+
+        updateContextMenu();
 
         if (changes[OPTION_AUTOCOMPLETE_KEY]) {
             enableDisableAutocomplete(changes[OPTION_AUTOCOMPLETE_KEY].newValue);
@@ -105,11 +120,15 @@ browser.storage.onChanged.addListener(
     }
 );
 
-function updateContextMenu(items) {
-    browser.contextMenus.removeAll().then(() => fillContextMenu(items));
+function updateContextMenu() {
+    browser.contextMenus.removeAll().then(() => maybeFillContextMenu());
 }
 
-function fillContextMenu(items) {
+function maybeFillContextMenu() {
+    if (!contextmenuEnabled) {
+        return;
+    }
+
     browser.contextMenus.create({
         id: CONTEXT_MENU_ROOT_ID,
         title: "Simple Form Fill",
@@ -128,6 +147,7 @@ function fillContextMenu(items) {
         contexts: ["selection"],
     });
 
+    let items = itemStringToList(itemString);
     if (items.length > 0) {
         browser.contextMenus.create({
             id: CONTEXT_MENU_SEPARATOR_ID,

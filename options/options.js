@@ -1,4 +1,5 @@
 const OPTION_ITEMS_KEY = "items";
+const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const OPTION_USE_TAB_KEY = "useTabToChooseItems";
 const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
@@ -8,6 +9,7 @@ const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
 function restoreOptions() {
     browser.storage.local.get([
         OPTION_ITEMS_KEY,
+        OPTION_CONTEXTMENU_KEY,
         OPTION_AUTOCOMPLETE_KEY,
         OPTION_USE_TAB_KEY,
         OPTION_MATCH_ONLY_AT_BEGINNING,
@@ -16,6 +18,7 @@ function restoreOptions() {
     ]).then(
         result => {
             setTextValue("items", result[OPTION_ITEMS_KEY]);
+            setBooleanValue("contextmenuEnabled", result[OPTION_CONTEXTMENU_KEY]);
             setBooleanValue("autocompleteEnabled", result[OPTION_AUTOCOMPLETE_KEY]);
             setBooleanValue("useTabToChooseItems", result[OPTION_USE_TAB_KEY]);
             setBooleanValue("matchOnlyAtBeginning", result[OPTION_MATCH_ONLY_AT_BEGINNING]);
@@ -50,6 +53,7 @@ function saveOptions(event) {
     event.preventDefault();
     browser.storage.local.set({
         [OPTION_ITEMS_KEY]: document.querySelector("#items").value,
+        [OPTION_CONTEXTMENU_KEY]: document.querySelector("#contextmenuEnabled").checked,
         [OPTION_AUTOCOMPLETE_KEY]: document.querySelector("#autocompleteEnabled").checked,
         [OPTION_USE_TAB_KEY]: document.querySelector("#useTabToChooseItems").checked,
         [OPTION_MATCH_ONLY_AT_BEGINNING]: document.querySelector("#matchOnlyAtBeginning").checked,
