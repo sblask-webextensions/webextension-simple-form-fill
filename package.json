@@ -30,5 +30,5 @@
         "test": "web-ext lint"
     },
     "title": "Simple Form Fill",
-    "version": "2.1.5"
+    "version": "2.1.6"
 }
