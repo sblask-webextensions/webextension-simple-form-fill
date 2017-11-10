@@ -42,7 +42,7 @@ browser.storage.local.get([
             if (result[OPTION_CONTEXTMENU_KEY] === undefined) {
                 browser.storage.local.set({[OPTION_CONTEXTMENU_KEY]: true});
             } else {
-                contextmenuEnabled = result[OPTION_AUTOCOMPLETE_KEY];
+                contextmenuEnabled = result[OPTION_CONTEXTMENU_KEY];
             }
 
             updateContextMenu();
