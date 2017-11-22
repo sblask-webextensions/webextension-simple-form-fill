@@ -7,7 +7,9 @@ or using the optional autocomplete (not autofill) which suggest items based on
 typed input.
 
 New items can be added through the context menu while having some text selected
-or in the extension's preferences.
+or in the extension's preferences (click on toolbar icon).
+
+Please have a look at the screenshots to see how it works.
 
 Privacy Policy
 --------------
