@@ -147,7 +147,7 @@ function maybeFillContextMenu() {
         contexts: ["selection"],
     });
 
-    let items = itemStringToList(itemString);
+    const items = itemStringToList(itemString);
     if (items.length > 0) {
         browser.contextMenus.create({
             id: CONTEXT_MENU_SEPARATOR_ID,
@@ -155,7 +155,7 @@ function maybeFillContextMenu() {
             type: "separator",
             contexts: ["editable"],
         });
-        for (let item of items) {
+        for (const item of items) {
             browser.contextMenus.create({
                 id: item,
                 parentId: CONTEXT_MENU_ROOT_ID,
@@ -198,7 +198,7 @@ function addItem(item) {
 
 function sendOptions(tabId, frameId) {
     console.debug("Send items to tab " + tabId + " and frame " + frameId);
-    let options = {};
+    const options = {};
     if (frameId) {
         options.frameId = frameId;
     }
@@ -282,7 +282,7 @@ function enableDisableAutocomplete(enable) {
 
 function chainPromises(functions) {
     let promise = Promise.resolve();
-    for (let function_ of functions) {
+    for (const function_ of functions) {
         promise = promise.then(function_);
     }
 

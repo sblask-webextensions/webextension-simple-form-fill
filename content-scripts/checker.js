@@ -18,7 +18,7 @@ function getInputs() {
 let existingInputsCount = 0;
 let initializationRequested = false;
 function maybeSendMessage() {
-    let newInputsCount = getInputs().length;
+    const newInputsCount = getInputs().length;
     if (existingInputsCount != newInputsCount) {
         console.log("Checker for " + window.location.href + " request refresh");
         browser.runtime.sendMessage({
@@ -30,7 +30,7 @@ function maybeSendMessage() {
     }
 }
 
-let observer = new MutationObserver(function(_mutations) {
+const observer = new MutationObserver(function(_mutations) {
     maybeSendMessage();
 });
 

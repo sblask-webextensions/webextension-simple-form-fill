@@ -6,8 +6,8 @@ function addAutoCompleteToInputs(message) {
     }
 
     // getInputs() defined in checker.js
-    for (let input of getInputs()) { //  eslint-disable-line no-undef
-        let inputElement = $(input);
+    for (const input of getInputs()) { //  eslint-disable-line no-undef
+        const inputElement = $(input);
         inputElement.attr("autocomplete", "on");
 
         if (message.useTabToChooseItems) {
@@ -36,11 +36,11 @@ function addAutoCompleteToInputs(message) {
         inputElement.data("ui-autocomplete")._renderItem = function(ul, item) {
             let divContent = item.label;
             if (message.commentString && item.label.indexOf(message.commentString) != -1) {
-                let splits = item.label.split(message.commentString);
+                const splits = item.label.split(message.commentString);
                 divContent = splits[0] + "<span class='comment'>" + message.commentString + splits[1] + "</span>";
             }
 
-            let li = $("<li>").append($("<div>").append(divContent));
+            const li = $("<li>").append($("<div>").append(divContent));
             ul.append(li);
 
             return li;
@@ -50,7 +50,7 @@ function addAutoCompleteToInputs(message) {
 
 function sourceWrapper(itemList, commentString, matchOnlyAtBeginning) {
     function source(request, response) {
-        let term = $.trim(request.term);
+        const term = $.trim(request.term);
         let matcher = new RegExp($.ui.autocomplete.escapeRegex(term), "i");
 
         if (matchOnlyAtBeginning) {
@@ -80,7 +80,7 @@ function sourceWrapper(itemList, commentString, matchOnlyAtBeginning) {
 
 function keydownWrapper(inputElement) {
     function keydown(event) {
-        let isOpen = inputElement.autocomplete("widget").is(":visible");
+        const isOpen = inputElement.autocomplete("widget").is(":visible");
 
         if (event.keyCode == $.ui.keyCode.TAB && isOpen) {
             event.stopImmediatePropagation();
@@ -106,12 +106,12 @@ function keydownWrapper(inputElement) {
 
 function getCSS(inputElement) {
     let backgroundColor = inputElement.css("background-color");
-    let color = inputElement.css("color");
+    const color = inputElement.css("color");
 
     let borderColor = inputElement.css("border-bottom-color");
     let borderStyle = inputElement.css("border-bottom-style");
     let borderWidth = inputElement.css("border-bottom-width");
-    let borderRadius = inputElement.css("border-bottom-left-radius");
+    const borderRadius = inputElement.css("border-bottom-left-radius");
 
     // inset is default -> no css set
     if (borderStyle == "inset") {
@@ -134,7 +134,7 @@ function getCSS(inputElement) {
         borderWidth = "1px";
     }
 
-    let css = "" +
+    const css = "" +
 
         "background-color: "           + backgroundColor + " !important;" +
 

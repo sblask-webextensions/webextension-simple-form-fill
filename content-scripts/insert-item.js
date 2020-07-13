@@ -13,7 +13,7 @@ function insertItem(node, item) {
         return;
     }
 
-    let beforeCursorOrSelection = node.value.slice(0, node.selectionStart);
-    let afterCursorOrSelection = node.value.slice(node.selectionEnd, node.value.length);
+    const beforeCursorOrSelection = node.value.slice(0, node.selectionStart);
+    const afterCursorOrSelection = node.value.slice(node.selectionEnd, node.value.length);
     node.value = beforeCursorOrSelection + item + afterCursorOrSelection;
 }
