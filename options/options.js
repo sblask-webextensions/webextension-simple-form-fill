@@ -29,16 +29,16 @@ function restoreOptions() {
 }
 
 function enableAutosave() {
-    for (let input of document.querySelectorAll("input:not([type=radio]):not([type=checkbox]), textarea")) {
+    for (const input of document.querySelectorAll("input:not([type=radio]):not([type=checkbox]), textarea")) {
         input.addEventListener("input", saveOptions);
     }
-    for (let input of document.querySelectorAll("input[type=radio], input[type=checkbox]")) {
+    for (const input of document.querySelectorAll("input[type=radio], input[type=checkbox]")) {
         input.addEventListener("change", saveOptions);
     }
 }
 
 function setTextValue(elementID, newValue) {
-    let oldValue = document.getElementById(elementID).value;
+    const oldValue = document.getElementById(elementID).value;
 
     if (oldValue !== newValue) {
         document.getElementById(elementID).value = newValue;
