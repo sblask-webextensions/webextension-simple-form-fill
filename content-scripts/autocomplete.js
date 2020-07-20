@@ -7,14 +7,14 @@ function addAutoCompleteToInputs(message) {
 
     // getInputs() defined in checker.js
     for (const input of getInputs()) { //  eslint-disable-line no-undef
-        const inputElement = $(input);
-        inputElement.attr("autocomplete", "on");
+        const jQueryInput = $(input);
+        jQueryInput.attr("autocomplete", "on");
 
         if (message.useTabToChooseItems) {
-            inputElement.keydown(keydownWrapper(inputElement));
+            jQueryInput.keydown(keydownWrapper(jQueryInput));
         }
 
-        inputElement.autocomplete({
+        jQueryInput.autocomplete({
             source: sourceWrapper(
                 message.itemList,
                 message.commentString,
@@ -28,12 +28,12 @@ function addAutoCompleteToInputs(message) {
             },
         });
 
-        inputElement.data("ui-autocomplete")._resizeMenu = function() {
-            this.menu.element.css("cssText", getCSS(inputElement));
-            this.menu.element.outerWidth(inputElement.outerWidth());
+        jQueryInput.data("ui-autocomplete")._resizeMenu = function() {
+            this.menu.element.css("cssText", getCSS(jQueryInput));
+            this.menu.element.outerWidth(jQueryInput.outerWidth());
         };
 
-        inputElement.data("ui-autocomplete")._renderItem = function(ul, item) {
+        jQueryInput.data("ui-autocomplete")._renderItem = function(ul, item) {
             let divContent = item.label;
             if (message.commentString && item.label.indexOf(message.commentString) != -1) {
                 const splits = item.label.split(message.commentString);
@@ -78,9 +78,9 @@ function sourceWrapper(itemList, commentString, matchOnlyAtBeginning) {
     return source;
 }
 
-function keydownWrapper(inputElement) {
+function keydownWrapper(jQueryInput) {
     function keydown(event) {
-        const isOpen = inputElement.autocomplete("widget").is(":visible");
+        const isOpen = jQueryInput.autocomplete("widget").is(":visible");
 
         if (event.keyCode == $.ui.keyCode.TAB && isOpen) {
             event.stopImmediatePropagation();
@@ -92,7 +92,7 @@ function keydownWrapper(inputElement) {
                 parameters = { keyCode: $.ui.keyCode.DOWN };
             }
 
-            inputElement.trigger(jQuery.Event("keydown", parameters));
+            jQueryInput.trigger(jQuery.Event("keydown", parameters));
         }
 
         // disable autocomplete's weird handling for shift key
@@ -104,14 +104,14 @@ function keydownWrapper(inputElement) {
     return keydown;
 }
 
-function getCSS(inputElement) {
-    let backgroundColor = inputElement.css("background-color");
-    const color = inputElement.css("color");
+function getCSS(jQueryInput) {
+    let backgroundColor = jQueryInput.css("background-color");
+    const color = jQueryInput.css("color");
 
-    let borderColor = inputElement.css("border-bottom-color");
-    let borderStyle = inputElement.css("border-bottom-style");
-    let borderWidth = inputElement.css("border-bottom-width");
-    const borderRadius = inputElement.css("border-bottom-left-radius");
+    let borderColor = jQueryInput.css("border-bottom-color");
+    let borderStyle = jQueryInput.css("border-bottom-style");
+    let borderWidth = jQueryInput.css("border-bottom-width");
+    const borderRadius = jQueryInput.css("border-bottom-left-radius");
 
     // inset is default -> no css set
     if (borderStyle == "inset") {
