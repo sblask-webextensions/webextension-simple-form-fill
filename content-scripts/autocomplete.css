@@ -21,6 +21,7 @@
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item .ui-menu-item-wrapper.ui-state-active {
     background: #007fff;
     color: #FFFFFF;
+    margin: 0;
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item .ui-menu-item-wrapper.comment {
     color: #AAAAAA;
