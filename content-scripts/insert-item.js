@@ -16,4 +16,8 @@ function insertItem(node, item) {
     const beforeCursorOrSelection = node.value.slice(0, node.selectionStart);
     const afterCursorOrSelection = node.value.slice(node.selectionEnd, node.value.length);
     node.value = beforeCursorOrSelection + item + afterCursorOrSelection;
+    const detail = {
+        simpleFormFillCustomInputEvent: true,
+    };
+    node.dispatchEvent(new CustomEvent("input", { detail }));
 }

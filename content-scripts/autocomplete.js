@@ -20,6 +20,27 @@ function addAutoCompleteToInputs(message) {
                 message.commentString,
                 message.matchOnlyAtBeginning,
             ),
+            // custom select to prevent reset of value after choosing item
+            select: function(_event, {item}) {
+                jQueryInput.val( item.value );
+                const detail = {
+                    simpleFormFillCustomInputEvent: true,
+                };
+                input.dispatchEvent(new CustomEvent("input", { detail }));
+                return false;
+            },
+            // custom search to prevent autocomplete from re-opening
+            search: function(event, _ui) {
+                let originalEvent = event;
+                while (originalEvent.originalEvent) {
+                    originalEvent = originalEvent.originalEvent;
+                }
+                const detail = originalEvent.detail;
+                if (detail && detail.simpleFormFillCustomInputEvent) {
+                    return false;
+                }
+                return true;
+            },
             autoFocus: false,
             delay: 100,
             minLength: message.minimumCharacterCount,
