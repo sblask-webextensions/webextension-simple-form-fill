@@ -2,10 +2,10 @@
     display: none;
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill {
-    overflow: hidden;
     margin: 0 !important;
-    z-index: 999999999;
     min-width: 200px;
+    overflow: hidden;
+    z-index: 999999999;
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill .ui-menu-item {
     cursor: pointer;
