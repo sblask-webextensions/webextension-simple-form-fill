@@ -14,6 +14,8 @@ const ELEMENT_MATCH_ONLY_AT_BEGINNING = "match-only-at-beginning";
 const ELEMENT_MINIMUM_CHARACTER_COUNT = "minimum-character-count";
 const ELEMENT_USE_TAB_TO_CHOOSE_ITEMS = "use-tab-to-choose-items";
 
+let timeout;
+
 function restoreOptions() {
     browser.storage.local.get([
         OPTION_AUTOCOMPLETE_KEY,
@@ -38,10 +40,10 @@ function restoreOptions() {
 
 function enableAutosave() {
     for (const input of document.querySelectorAll("input:not([type=radio]):not([type=checkbox]), textarea")) {
-        input.addEventListener("input", saveOptions);
+        input.addEventListener("input", delayedSaveOptions);
     }
     for (const input of document.querySelectorAll("input[type=radio], input[type=checkbox]")) {
-        input.addEventListener("change", saveOptions);
+        input.addEventListener("change", delayedSaveOptions);
     }
 }
 
@@ -55,6 +57,11 @@ function setTextValue(elementID, newValue) {
 
 function setBooleanValue(elementID, newValue) {
     document.getElementById(elementID).checked = newValue;
+}
+
+function delayedSaveOptions(event) {
+    clearTimeout(timeout);
+    timeout = setTimeout(saveOptions, 1000, event);
 }
 
 function saveOptions(event) {
