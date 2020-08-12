@@ -1,12 +1,12 @@
 "use strict";
 
-const OPTION_ITEMS_KEY = "items";
-const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
-const OPTION_USE_TAB_KEY = "useTabToChooseItems";
-const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_COMMENT_STRING_KEY = "commentString";
+const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
+const OPTION_ITEMS_KEY = "items";
+const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
+const OPTION_USE_TAB_KEY = "useTabToChooseItems";
 
 const CONTEXT_MENU_ROOT_ID = "root";
 const CONTEXT_MENU_PREFERENCES_ID = "preferences";
@@ -22,13 +22,13 @@ let commentString = undefined;
 let minimumCharacterCount = undefined;
 
 browser.storage.local.get([
-    OPTION_ITEMS_KEY,
-    OPTION_CONTEXTMENU_KEY,
     OPTION_AUTOCOMPLETE_KEY,
-    OPTION_USE_TAB_KEY,
-    OPTION_MATCH_ONLY_AT_BEGINNING,
     OPTION_COMMENT_STRING_KEY,
+    OPTION_CONTEXTMENU_KEY,
+    OPTION_ITEMS_KEY,
+    OPTION_MATCH_ONLY_AT_BEGINNING,
     OPTION_MINIMUM_CHARACTER_COUNT_KEY,
+    OPTION_USE_TAB_KEY,
 ])
     .then(
         (result) => {
