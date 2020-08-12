@@ -2,7 +2,7 @@
     "applications": {
         "gecko": {
             "id": "simpleformfill@sblask",
-            "strict_min_version": "48.0"
+            "strict_min_version": "57.0"
         }
     },
     "author": "Sebastian Blask",
