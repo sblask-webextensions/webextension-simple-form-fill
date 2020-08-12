@@ -1,29 +1,37 @@
-const OPTION_ITEMS_KEY = "items";
-const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
-const OPTION_USE_TAB_KEY = "useTabToChooseItems";
-const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_COMMENT_STRING_KEY = "commentString";
+const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
+const OPTION_ITEMS_KEY = "items";
+const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
+const OPTION_USE_TAB_KEY = "useTabToChooseItems";
+
+const ELEMENT_AUTOCOMPLETE_ENABLED = "autocomplete-enabled";
+const ELEMENT_COMMENT_STRING = "comment-string";
+const ELEMENT_CONTEXTMENU_ENABLED = "contextmenu-enabled";
+const ELEMENT_ITEMS = "items";
+const ELEMENT_MATCH_ONLY_AT_BEGINNING = "match-only-at-beginning";
+const ELEMENT_MINIMUM_CHARACTER_COUNT = "minimum-character-count";
+const ELEMENT_USE_TAB_TO_CHOOSE_ITEMS = "use-tab-to-choose-items";
 
 function restoreOptions() {
     browser.storage.local.get([
-        OPTION_ITEMS_KEY,
-        OPTION_CONTEXTMENU_KEY,
         OPTION_AUTOCOMPLETE_KEY,
-        OPTION_USE_TAB_KEY,
-        OPTION_MATCH_ONLY_AT_BEGINNING,
         OPTION_COMMENT_STRING_KEY,
+        OPTION_CONTEXTMENU_KEY,
+        OPTION_ITEMS_KEY,
+        OPTION_MATCH_ONLY_AT_BEGINNING,
         OPTION_MINIMUM_CHARACTER_COUNT_KEY,
+        OPTION_USE_TAB_KEY,
     ]).then(
         result => {
-            setTextValue("items", result[OPTION_ITEMS_KEY]);
-            setBooleanValue("contextmenuEnabled", result[OPTION_CONTEXTMENU_KEY]);
-            setBooleanValue("autocompleteEnabled", result[OPTION_AUTOCOMPLETE_KEY]);
-            setBooleanValue("useTabToChooseItems", result[OPTION_USE_TAB_KEY]);
-            setBooleanValue("matchOnlyAtBeginning", result[OPTION_MATCH_ONLY_AT_BEGINNING]);
-            setTextValue("commentString", result[OPTION_COMMENT_STRING_KEY]);
-            setTextValue("minimumCharacterCount", result[OPTION_MINIMUM_CHARACTER_COUNT_KEY]);
+            setBooleanValue(ELEMENT_AUTOCOMPLETE_ENABLED, result[OPTION_AUTOCOMPLETE_KEY]);
+            setBooleanValue(ELEMENT_CONTEXTMENU_ENABLED, result[OPTION_CONTEXTMENU_KEY]);
+            setBooleanValue(ELEMENT_MATCH_ONLY_AT_BEGINNING, result[OPTION_MATCH_ONLY_AT_BEGINNING]);
+            setBooleanValue(ELEMENT_USE_TAB_TO_CHOOSE_ITEMS, result[OPTION_USE_TAB_KEY]);
+            setTextValue(ELEMENT_COMMENT_STRING, result[OPTION_COMMENT_STRING_KEY]);
+            setTextValue(ELEMENT_ITEMS, result[OPTION_ITEMS_KEY]);
+            setTextValue(ELEMENT_MINIMUM_CHARACTER_COUNT, result[OPTION_MINIMUM_CHARACTER_COUNT_KEY]);
         }
     );
 }
@@ -52,13 +60,13 @@ function setBooleanValue(elementID, newValue) {
 function saveOptions(event) {
     event.preventDefault();
     browser.storage.local.set({
-        [OPTION_ITEMS_KEY]: document.querySelector("#items").value,
-        [OPTION_CONTEXTMENU_KEY]: document.querySelector("#contextmenuEnabled").checked,
-        [OPTION_AUTOCOMPLETE_KEY]: document.querySelector("#autocompleteEnabled").checked,
-        [OPTION_USE_TAB_KEY]: document.querySelector("#useTabToChooseItems").checked,
-        [OPTION_MATCH_ONLY_AT_BEGINNING]: document.querySelector("#matchOnlyAtBeginning").checked,
-        [OPTION_COMMENT_STRING_KEY]: document.querySelector("#commentString").value,
-        [OPTION_MINIMUM_CHARACTER_COUNT_KEY]: parseInt(document.querySelector("#minimumCharacterCount").value),
+        [OPTION_AUTOCOMPLETE_KEY]: document.querySelector(`#${ELEMENT_AUTOCOMPLETE_ENABLED}`).checked,
+        [OPTION_COMMENT_STRING_KEY]: document.querySelector(`#${ELEMENT_COMMENT_STRING}`).value,
+        [OPTION_CONTEXTMENU_KEY]: document.querySelector(`#${ELEMENT_CONTEXTMENU_ENABLED}`).checked,
+        [OPTION_ITEMS_KEY]: document.querySelector(`#${ELEMENT_ITEMS}`).value,
+        [OPTION_MATCH_ONLY_AT_BEGINNING]: document.querySelector(`#${ELEMENT_MATCH_ONLY_AT_BEGINNING}`).checked,
+        [OPTION_MINIMUM_CHARACTER_COUNT_KEY]: parseInt(document.querySelector(`#${ELEMENT_MINIMUM_CHARACTER_COUNT}`).value),
+        [OPTION_USE_TAB_KEY]: document.querySelector(`#${ELEMENT_USE_TAB_TO_CHOOSE_ITEMS}`).checked,
     });
 }
 
