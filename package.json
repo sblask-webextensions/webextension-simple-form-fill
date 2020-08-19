@@ -2,6 +2,7 @@
     "author": "Sebastian Blask",
     "devDependencies": {
         "eslint": "7.7.x",
+        "tape": "5.0.x",
         "web-ext": "5.0.x"
     },
     "license": "MIT",
@@ -27,7 +28,7 @@
         "release": "VERSION=$(jq --raw-output '.version' manifest.json); hub release create $(for file in *$VERSION*.zip; do echo \" -a ${file} \"; done) -m $VERSION $VERSION",
         "start": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox",
         "start:nightly": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
-        "test": "web-ext lint"
+        "test": "web-ext lint && tape $(find . -not -path '*node_modules*' -name 'test-*.js')"
     },
     "title": "Simple Form Fill",
     "version": "2.1.7"

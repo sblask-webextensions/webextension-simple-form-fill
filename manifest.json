@@ -9,6 +9,7 @@
     "background": {
         "scripts": [
             "browser-polyfill.js",
+            "util.js",
             "background.js"
         ]
     },
@@ -21,11 +22,11 @@
     "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete.",
     "homepage_url": "https://github.com/sblask/webextension-simple-form-fill",
     "icons": {
-        "128": "icon-128x128.png",
         "16": "icon-16x16.png",
         "32": "icon-32x32.png",
         "48": "icon-48x48.png",
-        "64": "icon-64x64.png"
+        "64": "icon-64x64.png",
+        "128": "icon-128x128.png"
     },
     "manifest_version": 2,
     "name": "Simple Form Fill",
