@@ -31,5 +31,5 @@
         "test": "web-ext lint && tape $(find . -not -path '*node_modules*' -name 'test-*.js')"
     },
     "title": "Simple Form Fill",
-    "version": "2.2.0"
+    "version": "2.2.1"
 }
