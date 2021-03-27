@@ -114,6 +114,7 @@ function keydownWrapper(jQueryInput) {
             }
 
             jQueryInput.trigger(jQuery.Event("keydown", parameters));
+            return false;
         }
 
         // disable autocomplete's weird handling for shift key
