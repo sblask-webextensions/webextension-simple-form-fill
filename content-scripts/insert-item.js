@@ -9,12 +9,12 @@ function insertItemListener(message) {
 }
 
 function insertItem(node, item) {
-    if (node.selectionStart == undefined || node.selectionEnd == undefined) {
-        return;
-    }
+    // some pages seem to override/reset selectionStart/selectionEnd
+    const selectionStart = node.selectionStart || 0;
+    const selectionEnd = node.selectionEnd || node.value.length;
 
-    const beforeCursorOrSelection = node.value.slice(0, node.selectionStart);
-    const afterCursorOrSelection = node.value.slice(node.selectionEnd, node.value.length);
+    const beforeCursorOrSelection = node.value.slice(0, selectionStart);
+    const afterCursorOrSelection = node.value.slice(selectionEnd, node.value.length);
     node.value = beforeCursorOrSelection + item + afterCursorOrSelection;
     const detail = {
         simpleFormFillCustomInputEvent: true,
