@@ -1,7 +1,6 @@
 /* global util */
 
 const OPTION_AUTOCOMPLETE_KEY = 'autocompleteEnabled'
-const OPTION_COMMENT_STRING_KEY = 'commentString'
 const OPTION_ITEMS_KEY = 'items'
 const OPTION_MATCH_ONLY_AT_BEGINNING = 'matchOnlyAtBeginning'
 const OPTION_MINIMUM_CHARACTER_COUNT_KEY = 'minimumCharacterCount'
@@ -9,17 +8,17 @@ const OPTION_SYNC_ITEMS = 'syncItems'
 const OPTION_USE_TAB_KEY = 'useTabToChooseItems'
 
 let autocompleteEnabled
-let commentString
 let itemString
 let matchOnlyAtBeginning
 let minimumCharacterCount
 let syncItems
 let useTabToChooseItems
 
+const defaultEasyplantItemString = 'My string\nRonas was here\nNoa the mango'
+
 browser.storage.local
     .get([
         OPTION_AUTOCOMPLETE_KEY,
-        OPTION_COMMENT_STRING_KEY,
         OPTION_ITEMS_KEY,
         OPTION_MATCH_ONLY_AT_BEGINNING,
         OPTION_MINIMUM_CHARACTER_COUNT_KEY,
@@ -27,8 +26,11 @@ browser.storage.local
         OPTION_USE_TAB_KEY
     ])
     .then(result => {
+        console.log({ result })
         if (result[OPTION_ITEMS_KEY] === undefined) {
-            browser.storage.local.set({ [OPTION_ITEMS_KEY]: '' })
+            browser.storage.local.set({
+                [OPTION_ITEMS_KEY]: defaultEasyplantItemString
+            })
         } else {
             itemString = result[OPTION_ITEMS_KEY]
         }
@@ -40,7 +42,7 @@ browser.storage.local
         }
 
         if (result[OPTION_USE_TAB_KEY] === undefined) {
-            browser.storage.local.set({ [OPTION_USE_TAB_KEY]: false })
+            browser.storage.local.set({ [OPTION_USE_TAB_KEY]: true })
         } else {
             useTabToChooseItems = result[OPTION_USE_TAB_KEY]
         }
@@ -51,12 +53,6 @@ browser.storage.local
             })
         } else {
             matchOnlyAtBeginning = result[OPTION_MATCH_ONLY_AT_BEGINNING]
-        }
-
-        if (result[OPTION_COMMENT_STRING_KEY] === undefined) {
-            browser.storage.local.set({ [OPTION_COMMENT_STRING_KEY]: '' })
-        } else {
-            commentString = result[OPTION_COMMENT_STRING_KEY]
         }
 
         if (result[OPTION_MINIMUM_CHARACTER_COUNT_KEY] === undefined) {
@@ -105,10 +101,6 @@ browser.storage.onChanged.addListener((changes, areaName) => {
         matchOnlyAtBeginning = changes[OPTION_MATCH_ONLY_AT_BEGINNING].newValue
     }
 
-    if (changes[OPTION_COMMENT_STRING_KEY]) {
-        commentString = changes[OPTION_COMMENT_STRING_KEY].newValue
-    }
-
     if (changes[OPTION_MINIMUM_CHARACTER_COUNT_KEY]) {
         minimumCharacterCount =
             changes[OPTION_MINIMUM_CHARACTER_COUNT_KEY].newValue
@@ -140,7 +132,6 @@ function sendOptions (tabId, frameId) {
     browser.tabs.sendMessage(
         tabId,
         {
-            commentString,
             itemList: itemStringToList(itemString),
             useTabToChooseItems,
             minimumCharacterCount,
