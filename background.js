@@ -2,21 +2,14 @@
 
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const OPTION_COMMENT_STRING_KEY = "commentString";
-const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
 const OPTION_ITEMS_KEY = "items";
 const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
 const OPTION_SYNC_ITEMS = "syncItems";
 const OPTION_USE_TAB_KEY = "useTabToChooseItems";
 
-const CONTEXT_MENU_ROOT_ID = "root";
-const CONTEXT_MENU_PREFERENCES_ID = "preferences";
-const CONTEXT_MENU_SEPARATOR_ID = "separator";
-const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
-
 let autocompleteEnabled;
 let commentString;
-let contextmenuEnabled;
 let itemString;
 let matchOnlyAtBeginning;
 let minimumCharacterCount;
@@ -26,7 +19,6 @@ let useTabToChooseItems;
 browser.storage.local.get([
     OPTION_AUTOCOMPLETE_KEY,
     OPTION_COMMENT_STRING_KEY,
-    OPTION_CONTEXTMENU_KEY,
     OPTION_ITEMS_KEY,
     OPTION_MATCH_ONLY_AT_BEGINNING,
     OPTION_MINIMUM_CHARACTER_COUNT_KEY,
@@ -41,14 +33,6 @@ browser.storage.local.get([
             } else {
                 itemString = result[OPTION_ITEMS_KEY];
             }
-
-            if (result[OPTION_CONTEXTMENU_KEY] === undefined) {
-                browser.storage.local.set({[OPTION_CONTEXTMENU_KEY]: true});
-            } else {
-                contextmenuEnabled = result[OPTION_CONTEXTMENU_KEY];
-            }
-
-            updateContextMenu();
 
             if (result[OPTION_AUTOCOMPLETE_KEY] === undefined) {
                 browser.storage.local.set({[OPTION_AUTOCOMPLETE_KEY]: false});
@@ -110,12 +94,6 @@ browser.storage.onChanged.addListener(
             }
         }
 
-        if (changes[OPTION_CONTEXTMENU_KEY]) {
-            contextmenuEnabled = changes[OPTION_CONTEXTMENU_KEY].newValue;
-        }
-
-        updateContextMenu();
-
         if (changes[OPTION_AUTOCOMPLETE_KEY]) {
             enableDisableAutocomplete(changes[OPTION_AUTOCOMPLETE_KEY].newValue);
         }
@@ -142,71 +120,6 @@ browser.storage.onChanged.addListener(
 
     }
 );
-
-function updateContextMenu() {
-    browser.contextMenus.removeAll().then(() => maybeFillContextMenu());
-}
-
-function maybeFillContextMenu() {
-    if (!contextmenuEnabled) {
-        return;
-    }
-
-    browser.contextMenus.create({
-        id: CONTEXT_MENU_ROOT_ID,
-        title: "Simple Form Fill",
-        contexts: ["page", "frame", "selection", "editable"],
-    });
-    browser.contextMenus.create({
-        id: CONTEXT_MENU_PREFERENCES_ID,
-        parentId: CONTEXT_MENU_ROOT_ID,
-        title: "Preferences",
-        contexts: ["page", "frame", "selection", "editable"],
-    });
-    browser.contextMenus.create({
-        id: CONTEXT_MENU_ADD_SELECTION_ID,
-        parentId: CONTEXT_MENU_ROOT_ID,
-        title: "Add '%s'",
-        contexts: ["selection"],
-    });
-
-    const items = itemStringToList(itemString);
-    if (items.length > 0) {
-        browser.contextMenus.create({
-            id: CONTEXT_MENU_SEPARATOR_ID,
-            parentId: CONTEXT_MENU_ROOT_ID,
-            type: "separator",
-            contexts: ["editable"],
-        });
-        for (const item of items) {
-            browser.contextMenus.create({
-                id: item,
-                parentId: CONTEXT_MENU_ROOT_ID,
-                title: item,
-                contexts: ["editable"],
-            });
-        }
-    }
-}
-
-browser.contextMenus.onClicked.addListener((info, tab) => {
-    switch (info.menuItemId) {
-        case CONTEXT_MENU_PREFERENCES_ID:
-            browser.runtime.openOptionsPage();
-            break;
-        case CONTEXT_MENU_ADD_SELECTION_ID:
-            addItem(info.selectionText);
-            break;
-        default:
-            chainPromises([
-                ()            => { return browser.tabs.executeScript(tab.id, {file: "browser-polyfill.js", allFrames: true}); },
-                ()            => { return browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true}); },
-                ()            => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; },
-                (cleanedItem) => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); },
-            ]);
-
-    }
-});
 
 function addItem(item) {
     if (itemString) {

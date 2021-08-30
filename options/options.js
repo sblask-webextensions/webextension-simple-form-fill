@@ -1,6 +1,5 @@
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const OPTION_COMMENT_STRING_KEY = "commentString";
-const OPTION_CONTEXTMENU_KEY = "contextmenuEnabled";
 const OPTION_ITEMS_KEY = "items";
 const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
@@ -22,7 +21,6 @@ function restoreOptions() {
     browser.storage.local.get([
         OPTION_AUTOCOMPLETE_KEY,
         OPTION_COMMENT_STRING_KEY,
-        OPTION_CONTEXTMENU_KEY,
         OPTION_ITEMS_KEY,
         OPTION_MATCH_ONLY_AT_BEGINNING,
         OPTION_MINIMUM_CHARACTER_COUNT_KEY,
@@ -31,7 +29,6 @@ function restoreOptions() {
     ]).then(
         result => {
             setBooleanValue(ELEMENT_AUTOCOMPLETE_ENABLED, result[OPTION_AUTOCOMPLETE_KEY]);
-            setBooleanValue(ELEMENT_CONTEXTMENU_ENABLED, result[OPTION_CONTEXTMENU_KEY]);
             setBooleanValue(ELEMENT_MATCH_ONLY_AT_BEGINNING, result[OPTION_MATCH_ONLY_AT_BEGINNING]);
             setBooleanValue(ELEMENT_SYNC_ITEMS, result[OPTION_SYNC_ITEMS]);
             setBooleanValue(ELEMENT_USE_TAB_TO_CHOOSE_ITEMS, result[OPTION_USE_TAB_KEY]);
@@ -73,7 +70,6 @@ function saveOptions(event) {
     browser.storage.local.set({
         [OPTION_AUTOCOMPLETE_KEY]: document.querySelector(`#${ELEMENT_AUTOCOMPLETE_ENABLED}`).checked,
         [OPTION_COMMENT_STRING_KEY]: document.querySelector(`#${ELEMENT_COMMENT_STRING}`).value,
-        [OPTION_CONTEXTMENU_KEY]: document.querySelector(`#${ELEMENT_CONTEXTMENU_ENABLED}`).checked,
         [OPTION_ITEMS_KEY]: document.querySelector(`#${ELEMENT_ITEMS}`).value,
         [OPTION_MATCH_ONLY_AT_BEGINNING]: document.querySelector(`#${ELEMENT_MATCH_ONLY_AT_BEGINNING}`).checked,
         [OPTION_MINIMUM_CHARACTER_COUNT_KEY]: parseInt(document.querySelector(`#${ELEMENT_MINIMUM_CHARACTER_COUNT}`).value),

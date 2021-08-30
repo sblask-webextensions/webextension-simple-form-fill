@@ -30,6 +30,6 @@
         "start:nightly": "GTK_THEME=Greybird web-ext run --verbose --firefox firefox-trunk",
         "test": "web-ext lint && tape $(find . -not -path '*node_modules*' -name 'test-*.js')"
     },
-    "title": "Simple Form Fill",
+    "title": "Easyplant Refund Filler",
     "version": "2.2.1"
 }
