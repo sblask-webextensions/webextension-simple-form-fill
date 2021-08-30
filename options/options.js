@@ -5,10 +5,8 @@ const OPTION_MATCH_ONLY_AT_BEGINNING = "matchOnlyAtBeginning";
 const OPTION_MINIMUM_CHARACTER_COUNT_KEY = "minimumCharacterCount";
 const OPTION_SYNC_ITEMS = "syncItems";
 const OPTION_USE_TAB_KEY = "useTabToChooseItems";
-
 const ELEMENT_AUTOCOMPLETE_ENABLED = "autocomplete-enabled";
 const ELEMENT_COMMENT_STRING = "comment-string";
-const ELEMENT_CONTEXTMENU_ENABLED = "contextmenu-enabled";
 const ELEMENT_ITEMS = "items";
 const ELEMENT_MATCH_ONLY_AT_BEGINNING = "match-only-at-beginning";
 const ELEMENT_MINIMUM_CHARACTER_COUNT = "minimum-character-count";

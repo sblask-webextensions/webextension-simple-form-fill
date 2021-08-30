@@ -9,7 +9,7 @@
     "default_popup": "options/options.html",
     "default_title": "Easyplant Refund Filler"
   },
-  "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete.",
+  "description": "Enter text into input fields by using autocomplete.",
   "homepage_url": "https://github.com/sblask/webextension-simple-form-fill",
   "icons": {
     "16": "icon-16x16.png",
