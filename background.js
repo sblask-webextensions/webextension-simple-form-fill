@@ -1,5 +1,14 @@
 /* global util */
 
+const EASYPLANT_SHOPIFY_STORE_NAME = 'mt-ep'
+const EASYPLANT_SHOPIFY_TAGS_CSV_ID = '1bJj8catep_ga2I0sRLGbMIJlPDHxkXCd'
+
+const EASYPLANT_SHOPIFY_TAGS_CSV_ADDRESS = `https://drive.google.com/uc?export=download&id=${EASYPLANT_SHOPIFY_TAGS_CSV_ID}`
+
+const SHOPIFY_REFUND_REGEX_MATCHER = new RegExp(
+    `https?:\/\/${EASYPLANT_SHOPIFY_STORE_NAME}\.myshopify\.com\/admin\/orders\/.*\/refund`
+)
+
 const OPTION_AUTOCOMPLETE_KEY = 'autocompleteEnabled'
 const OPTION_ITEMS_KEY = 'items'
 const OPTION_MATCH_ONLY_AT_BEGINNING = 'matchOnlyAtBeginning'
@@ -14,61 +23,52 @@ let minimumCharacterCount
 let syncItems
 let useTabToChooseItems
 
-const defaultEasyplantItemString = 'My string\nRonas was here\nNoa the mango'
+updateShopifyTags().then(() => {
+    browser.storage.local
+        .get([
+            OPTION_AUTOCOMPLETE_KEY,
+            OPTION_MATCH_ONLY_AT_BEGINNING,
+            OPTION_MINIMUM_CHARACTER_COUNT_KEY,
+            OPTION_SYNC_ITEMS,
+            OPTION_USE_TAB_KEY
+        ])
+        .then(result => {
+            if (result[OPTION_AUTOCOMPLETE_KEY] === undefined) {
+                browser.storage.local.set({ [OPTION_AUTOCOMPLETE_KEY]: true })
+            } else {
+                enableDisableAutocomplete(result[OPTION_AUTOCOMPLETE_KEY])
+            }
 
-browser.storage.local
-    .get([
-        OPTION_AUTOCOMPLETE_KEY,
-        OPTION_ITEMS_KEY,
-        OPTION_MATCH_ONLY_AT_BEGINNING,
-        OPTION_MINIMUM_CHARACTER_COUNT_KEY,
-        OPTION_SYNC_ITEMS,
-        OPTION_USE_TAB_KEY
-    ])
-    .then(result => {
-        console.log({ result })
-        if (result[OPTION_ITEMS_KEY] === undefined) {
-            browser.storage.local.set({
-                [OPTION_ITEMS_KEY]: defaultEasyplantItemString
-            })
-        } else {
-            itemString = result[OPTION_ITEMS_KEY]
-        }
+            if (result[OPTION_USE_TAB_KEY] === undefined) {
+                browser.storage.local.set({ [OPTION_USE_TAB_KEY]: true })
+            } else {
+                useTabToChooseItems = result[OPTION_USE_TAB_KEY]
+            }
 
-        if (result[OPTION_AUTOCOMPLETE_KEY] === undefined) {
-            browser.storage.local.set({ [OPTION_AUTOCOMPLETE_KEY]: true })
-        } else {
-            enableDisableAutocomplete(result[OPTION_AUTOCOMPLETE_KEY])
-        }
+            if (result[OPTION_MATCH_ONLY_AT_BEGINNING] === undefined) {
+                browser.storage.local.set({
+                    [OPTION_MATCH_ONLY_AT_BEGINNING]: false
+                })
+            } else {
+                matchOnlyAtBeginning = result[OPTION_MATCH_ONLY_AT_BEGINNING]
+            }
 
-        if (result[OPTION_USE_TAB_KEY] === undefined) {
-            browser.storage.local.set({ [OPTION_USE_TAB_KEY]: true })
-        } else {
-            useTabToChooseItems = result[OPTION_USE_TAB_KEY]
-        }
+            if (result[OPTION_MINIMUM_CHARACTER_COUNT_KEY] === undefined) {
+                browser.storage.local.set({
+                    [OPTION_MINIMUM_CHARACTER_COUNT_KEY]: 0
+                })
+            } else {
+                minimumCharacterCount =
+                    result[OPTION_MINIMUM_CHARACTER_COUNT_KEY]
+            }
 
-        if (result[OPTION_MATCH_ONLY_AT_BEGINNING] === undefined) {
-            browser.storage.local.set({
-                [OPTION_MATCH_ONLY_AT_BEGINNING]: false
-            })
-        } else {
-            matchOnlyAtBeginning = result[OPTION_MATCH_ONLY_AT_BEGINNING]
-        }
-
-        if (result[OPTION_MINIMUM_CHARACTER_COUNT_KEY] === undefined) {
-            browser.storage.local.set({
-                [OPTION_MINIMUM_CHARACTER_COUNT_KEY]: 1
-            })
-        } else {
-            minimumCharacterCount = result[OPTION_MINIMUM_CHARACTER_COUNT_KEY]
-        }
-
-        if (result[OPTION_SYNC_ITEMS] === undefined) {
-            browser.storage.local.set({ [OPTION_SYNC_ITEMS]: false })
-        } else {
-            syncItems = result[OPTION_SYNC_ITEMS]
-        }
-    })
+            if (result[OPTION_SYNC_ITEMS] === undefined) {
+                browser.storage.local.set({ [OPTION_SYNC_ITEMS]: false })
+            } else {
+                syncItems = result[OPTION_SYNC_ITEMS]
+            }
+        })
+})
 
 browser.storage.onChanged.addListener((changes, areaName) => {
     let initTriggered = false
@@ -110,6 +110,16 @@ browser.storage.onChanged.addListener((changes, areaName) => {
         sendOptionsToActiveTab()
     }
 })
+
+function getEasyplantShopifyTags () {
+    return fetch(EASYPLANT_SHOPIFY_TAGS_CSV_ADDRESS)
+        .then(response => response.text())
+        .then(shopifyTagsString => {
+            const allTags = itemStringToList(shopifyTagsString)
+            allTags.shift() // Remove the "Tag" Headline from the CSV
+            return allTags.join('\n')
+        })
+}
 
 function addItem (item) {
     if (itemString) {
@@ -158,10 +168,45 @@ function sendOptionsToActiveTab () {
         })
 }
 
-function onUpdated (tabId, changeInfo) {
-    if (changeInfo.status == 'complete') {
-        console.debug('New page loaded, check for inputs')
+function setOptionItems (optionItems) {
+    browser.storage.local.get([OPTION_ITEMS_KEY]).then(result => {
+        if (result[OPTION_ITEMS_KEY] === undefined) {
+            browser.storage.local.set({
+                [OPTION_ITEMS_KEY]: optionItems
+            })
+        } else {
+            const itemStringFromCache = result[OPTION_ITEMS_KEY]
+            if (itemStringFromCache !== optionItems) {
+                browser.storage.local.set({
+                    [OPTION_ITEMS_KEY]: optionItems
+                })
+                itemString = tags
+            } else {
+                itemString = itemStringFromCache
+            }
+        }
+    })
+}
+
+function updateShopifyTags () {
+    return getEasyplantShopifyTags().then(setOptionItems)
+}
+
+function isEasyPlantShopifyRefundURL (url) {
+    return SHOPIFY_REFUND_REGEX_MATCHER.test(url)
+}
+
+function onUpdated (tabId, changeInfo, tab) {
+    // We only look for text inputs if we're at our shopify store's refund page.
+    if (
+        changeInfo.status == 'complete' &&
+        isEasyPlantShopifyRefundURL(tab.url)
+    ) {
+        console.debug('New Shopify Refund page loaded, check for inputs')
         chainPromises([
+            () => {
+                return updateShopifyTags()
+            },
             () => {
                 return browser.tabs.executeScript(tabId, {
                     file: 'browser-polyfill.js',
