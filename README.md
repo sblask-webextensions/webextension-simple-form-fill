@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/sblask/webextension-simple-form-fill.svg?branch=master)](https://travis-ci.org/sblask/webextension-simple-form-fill)
+[![Build Status](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/build.yml/badge.svg)](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/build.yml)
 
 Simple Form Fill
 ================
