@@ -3,7 +3,7 @@
     "devDependencies": {
         "eslint": "8.9.x",
         "tape": "5.3.x",
-        "web-ext": "6.5.x"
+        "web-ext": "6.7.x"
     },
     "license": "MIT",
     "name": "simpleformfill",
