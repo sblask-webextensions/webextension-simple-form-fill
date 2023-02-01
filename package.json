@@ -2,7 +2,7 @@
     "author": "Sebastian Blask",
     "devDependencies": {
         "eslint": "8.9.x",
-        "tape": "5.5.x",
+        "tape": "5.6.x",
         "web-ext": "6.7.x"
     },
     "license": "MIT",
