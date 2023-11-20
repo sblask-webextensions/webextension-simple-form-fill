@@ -26,7 +26,7 @@ function addAutoCompleteToInputs(message) {
                 const detail = {
                     simpleFormFillCustomInputEvent: true,
                 };
-                input.dispatchEvent(new CustomEvent("input", { detail }));
+                input.dispatchEvent(new CustomEvent("input", {detail}));
                 return false;
             },
             // custom search to prevent autocomplete from re-opening
@@ -108,9 +108,9 @@ function keydownWrapper(jQueryInput) {
 
             let parameters = undefined;
             if (event.shiftKey) {
-                parameters = { keyCode: $.ui.keyCode.UP };
+                parameters = {keyCode: $.ui.keyCode.UP};
             } else {
-                parameters = { keyCode: $.ui.keyCode.DOWN };
+                parameters = {keyCode: $.ui.keyCode.DOWN};
             }
 
             jQueryInput.trigger(jQuery.Event("keydown", parameters));

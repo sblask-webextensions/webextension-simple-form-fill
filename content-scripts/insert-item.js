@@ -19,5 +19,5 @@ function insertItem(node, item) {
     const detail = {
         simpleFormFillCustomInputEvent: true,
     };
-    node.dispatchEvent(new CustomEvent("input", { detail }));
+    node.dispatchEvent(new CustomEvent("input", {detail}));
 }
