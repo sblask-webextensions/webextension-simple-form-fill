@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/build.yml/badge.svg)](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/build.yml)
+[![pre-commit Status](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/pre-commit.yml)
 
 Simple Form Fill
 ================
