@@ -11,7 +11,7 @@
     "name": "simpleformfill",
     "repository": {
         "type": "git",
-        "url": "https://github.com/sblask/webextension-simple-form-fill"
+        "url": "https://github.com/sblask-webextensions/webextension-simple-form-fill"
     },
     "scripts": {
         "artifact-create:chrome": "web-ext build --artifacts-dir . --ignore-files screenshots package.json icon.fodg",
