@@ -5,11 +5,12 @@ const stylistic = require("@stylistic/eslint-plugin-js");
 module.exports = [
     {
         ignores: [
-            "base64.js",
             "browser-polyfill.js",
             "content-scripts/jquery-3.1.1.js",
             "content-scripts/jquery-ui-1.12.1.js",
         ],
+    },
+    {
         languageOptions: {
             globals: {
                 ...globals.browser,
