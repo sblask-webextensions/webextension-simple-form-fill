@@ -4,7 +4,7 @@
         "@eslint/js": "9.39.4",
         "@stylistic/eslint-plugin": "5.10.0",
         "eslint": "9.39.4",
-        "globals": "17.3.0",
+        "globals": "17.4.0",
         "tape": "5.9.0",
         "web-ext": "9.2.0"
     },
