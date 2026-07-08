@@ -106,7 +106,7 @@ function keydownWrapper(jQueryInput) {
         if (event.keyCode == $.ui.keyCode.TAB && isOpen) {
             event.stopImmediatePropagation();
 
-            let parameters = undefined;
+            let parameters;
             if (event.shiftKey) {
                 parameters = {keyCode: $.ui.keyCode.UP};
             } else {
