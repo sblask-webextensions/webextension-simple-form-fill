@@ -1,10 +1,4 @@
 {
-    "applications": {
-        "gecko": {
-            "id": "simpleformfill@sblask",
-            "strict_min_version": "57.0"
-        }
-    },
     "author": "Sebastian Blask",
     "background": {
         "scripts": [
@@ -18,6 +12,11 @@
         "default_icon": "icon.svg",
         "default_popup": "options/options.html",
         "default_title": "Simple Form Fill"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "simpleformfill@sblask"
+        }
     },
     "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete.",
     "homepage_url": "https://github.com/sblask/webextension-simple-form-fill",
@@ -38,5 +37,5 @@
         "contextMenus",
         "storage"
     ],
-    "version": "2.2.1"
+    "version": "x.x.x"
 }
