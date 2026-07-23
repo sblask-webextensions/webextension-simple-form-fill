@@ -15,7 +15,7 @@ VERSION=$1
 
 cp "${ROOT_DIRECTORY}"/LICENSE "${DIST_DIRECTORY}"
 
-jq --indent 4 ". | .version |= \"${VERSION}\" | del(.browser_specific_settings) | del(.browser_action.default_icon)" "${ROOT_DIRECTORY}"/manifest.json > "${DIST_DIRECTORY}"/manifest.json
+jq --indent 4 ". | .version |= \"${VERSION}\" | del(.browser_specific_settings) | del(.browser_action.default_icon) | del(.background.scripts) | .permissions -= [\"sessions\"]" "${ROOT_DIRECTORY}"/manifest.json > "${DIST_DIRECTORY}"/manifest.json
 
 # copy files
 cp "${ROOT_DIRECTORY}"/icons/*.{png,svg} "${DIST_DIRECTORY}"
@@ -32,5 +32,15 @@ fi
 cp "${ROOT_DIRECTORY}"/*.js "${DIST_DIRECTORY}"/
 rm "${DIST_DIRECTORY}"/eslint.config.js
 
+# create zip
+name="$(jq -r '.name' manifest.json |
+  tr '[:upper:]' '[:lower:]' |
+  sed -E '
+    s/[^a-z0-9]+/_/g
+    s/^_+//
+    s/_+$//
+    s/_+/_/g
+  '
+)"
 cd "${DIST_DIRECTORY}"
-zip -r ../chrome.zip .
+zip -r ../"${name}-${VERSION}-chrome.zip" .
