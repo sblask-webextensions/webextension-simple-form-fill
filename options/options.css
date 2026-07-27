@@ -6,44 +6,24 @@ body {
     min-width: 400px;
     padding: 10px;
 }
-form > fieldset {
+fieldset{
     border: 1px solid;
+}
+form,
+form > fieldset:has(> fieldset) {
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    gap: 10px;
     width: 100%;
 }
-form > fieldset:not(:first-child) {
-    margin-top: 10px;
-}
-form > fieldset > label:not(:first-child),
-form > fieldset > fieldset > label:not(:first-child) {
-    display: inline-block;
-    margin-top: 10px;
-}
-form > fieldset > fieldset {
+fieldset > fieldset {
     border-color: #DDDDDD;
-    padding: 5px;
-}
-form > fieldset > fieldset > label:not(:first-child),
-form > fieldset > fieldset > fieldset > label:not(:first-child) {
-    display: inline-block;
-    margin-top: 10px;
-}
-form > fieldset > fieldset > fieldset {
-    border-color: #DDDDDD;
-    padding: 5px;
 }
 button,
 input[type=file],
 input[type=number],
 input[type=text] {
     width: 100%;
-}
-input[type=checkbox],
-input[type=radio] {
-    display: inline-block;
-    vertical-align: -2px;
 }
 select {
     padding: 3px;
@@ -64,26 +44,43 @@ textarea:focus.error {
     color: red;
 }
 .box-wrapper {
-    margin-top: 5px;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    row-gap: 0;
 }
-.box-wrapper > .box-wrapper {
-    margin-left: 25px;
-}
-.box-wrapper > label, .color-wrapper .label {
-    display: block;
+.box-wrapper > label {
     line-height: 20px;
-    margin: -20px 0 0 25px;
 }
-.color-wrapper {
-    position: relative;
+
+.box-wrapper > .box-wrapper {
+    flex-basis: 100%;
+    padding-left: 20px;
 }
-.color-wrapper > input {
-    display: none;
+
+/* Fix vertical centering in Firefox */
+@supports (-moz-appearance: none) {
+    .box-wrapper > label {
+        transform: translateY(2px);
+    }
 }
-.color-wrapper .color-picker {
-    background-color: black;
+input[type=color] {
+    border: 0;
     border-radius: 3px;
-    display: block;
+    cursor: pointer;
     height: 20px;
+    padding: 0;
     width: 20px;
+}
+input[type=color]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type=color]::-webkit-color-swatch {
+    border: 0;
+    border-radius: 3px;
+}
+input[type=color]::-moz-color-swatch {
+    border: 0;
+    border-radius: 3px;
 }

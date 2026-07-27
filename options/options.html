@@ -8,17 +8,18 @@
     <body>
         <form>
             <fieldset>
+                <legend>Options</legend>
 
-                <label
-                    for="items"
-                    title="Items will appear in context menu and autocomplete"
-                    >Items</label>
-                <textarea id="items"></textarea>
+                <div>
+                    <label
+                        for="items"
+                        title="Items will appear in context menu and autocomplete"
+                        >Items</label>
+                    <textarea id="items"></textarea>
+                </div>
 
-                <label
-                    for="contextmenu"
-                    >Context Menu</label>
                 <fieldset id="contextmenu">
+                    <legend>Context Menu</legend>
 
                     <div class="box-wrapper">
                         <input type="checkbox" id="contextmenu-enabled"></input>
@@ -30,11 +31,10 @@
 
                 </fieldset>
 
-                <label
-                    for="autocomplete"
-                    title="You'll be able to pick items matching your input from a autocomplete popup. En-/Disabling will only affect new pages"
-                    >Autocomplete</label>
-                <fieldset id="autocomplete">
+                <fieldset>
+                    <legend
+                        title="You'll be able to pick items matching your input from a autocomplete popup. En-/Disabling will only affect new pages"
+                        >Autocomplete</legend>
 
                     <div class="box-wrapper">
                         <input type="checkbox" id="autocomplete-enabled"></input>
@@ -60,23 +60,27 @@
                             >Show only items starting with typed input</label>
                     </div>
 
-                    <label
-                        for="comment-string"
-                        title="Everything after and including this string will be removed from items before filling an input field"
-                        >Comment string</label>
-                    <input type="text" id="comment-string"></input>
+                    <div>
+                        <label
+                            for="comment-string"
+                            title="Everything after and including this string will be removed from items before filling an input field"
+                            >Comment string</label>
+                        <input type="text" id="comment-string"></input>
+                    </div>
 
 
-                    <label
-                        for="minimum-character-count"
-                        title="Autocomplete is opened only after at least this many characters have been typed"
-                        >Minimum number of characters to trigger autocomplete</label>
-                    <input type="number" min="1" id="minimum-character-count"></input>
+                    <div>
+                        <label
+                            for="minimum-character-count"
+                            title="Autocomplete is opened only after at least this many characters have been typed"
+                            >Minimum number of characters to trigger autocomplete</label>
+                        <input type="number" min="1" id="minimum-character-count"></input>
+                    </div>
 
                 </fieldset>
 
-                <label for="sync">Sync</label>
-                <fieldset id="sync">
+                <fieldset>
+                    <legend>Sync</legend>
                     <div>
                         Sync uses your browser's sync account and you need to
                         enable sync for extensions/add-ons in your browser's
@@ -90,10 +94,9 @@
                         <label for="sync-items-enabled">Sync items</label>
                     </div>
 
-                <legend>Options</legend>
+                </fieldset>
             </fieldset>
         </form>
-        <script src="../browser-polyfill.js"></script>
         <script src="./options.js"></script>
     </body>
 
