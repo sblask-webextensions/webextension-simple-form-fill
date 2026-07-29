@@ -1,6 +1,6 @@
-const test = require("tape");
+import test from "tape";
 
-const util = require("./util");
+import * as util from "../util.js";
 
 const DEFAULT_TARGET = [
     "one",

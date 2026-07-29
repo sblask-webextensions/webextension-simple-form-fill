@@ -1,4 +1,4 @@
-/* global util */
+import * as util from "./util.js";
 
 const OPTION_AUTOCOMPLETE_KEY = "autocompleteEnabled";
 const OPTION_COMMENT_STRING_KEY = "commentString";
