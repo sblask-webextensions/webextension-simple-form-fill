@@ -37,4 +37,4 @@ repos:
     rev: 3.6.1
     hooks:
       - id: editorconfig-checker
-        exclude: (browser-polyfill.js|content-scripts/jquery-.+)
+        exclude: content-scripts/jquery-.+

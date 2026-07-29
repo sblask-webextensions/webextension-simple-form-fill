@@ -199,7 +199,6 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             break;
         default:
             chainPromises([
-                ()            => { return browser.tabs.executeScript(tab.id, {file: "browser-polyfill.js", allFrames: true}); },
                 ()            => { return browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true}); },
                 ()            => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; },
                 (cleanedItem) => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); },
@@ -257,7 +256,6 @@ function onUpdated(tabId, changeInfo) {
     if (changeInfo.status == "complete") {
         console.debug("New page loaded, check for inputs");
         chainPromises([
-            () => { return browser.tabs.executeScript(tabId, {file: "browser-polyfill.js", allFrames: true}); },
             () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js", allFrames: true}); },
         ]);
     }
@@ -278,7 +276,6 @@ function onMessage(message, sender) {
 function initializeAutocomplete(tabId, frameId) {
     console.debug("Initialize autocomplete for tab " + tabId + " and frame " + frameId);
     chainPromises([
-        () => { return browser.tabs.executeScript(tabId, {file: "browser-polyfill.js",                  frameId: frameId}); },
         () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js",      frameId: frameId}); },
         () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js",  frameId: frameId}); },
         () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js",      frameId: frameId}); },

@@ -2,10 +2,10 @@
     "author": "Sebastian Blask",
     "background": {
         "scripts": [
-            "browser-polyfill.js",
             "util.js",
             "background.js"
-        ]
+        ],
+        "type": "module"
     },
     "browser_action": {
         "browser_style": false,
@@ -28,6 +28,7 @@
         "128": "icon-128x128.png"
     },
     "manifest_version": 2,
+    "minimum_chrome_version": "148",
     "name": "Simple Form Fill",
     "options_ui": {
         "page": "options/options.html"
