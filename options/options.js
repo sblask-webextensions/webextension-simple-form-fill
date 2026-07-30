@@ -29,7 +29,7 @@ function restoreOptions() {
         OPTION_SYNC_ITEMS,
         OPTION_USE_TAB_KEY,
     ]).then(
-        result => {
+        (result) => {
             setBooleanValue(ELEMENT_AUTOCOMPLETE_ENABLED, result[OPTION_AUTOCOMPLETE_KEY]);
             setBooleanValue(ELEMENT_CONTEXTMENU_ENABLED, result[OPTION_CONTEXTMENU_KEY]);
             setBooleanValue(ELEMENT_MATCH_ONLY_AT_BEGINNING, result[OPTION_MATCH_ONLY_AT_BEGINNING]);

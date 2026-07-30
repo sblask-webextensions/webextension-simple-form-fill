@@ -1,15 +1,16 @@
 "use strict";
 
-const INPUT_QUERY = "input" +
-    ":not([type=checkbox])" +
-    ":not([type=color])" +
-    ":not([type=hidden])" +
-    ":not([type=image])" +
-    ":not([type=password])" +
-    ":not([type=radio])" +
-    ":not([type=range])" +
-    ":not([type=submit])" +
-    "";
+const INPUT_QUERY = `
+        input
+        :not([type=checkbox])
+        :not([type=color])
+        :not([type=hidden])
+        :not([type=image])
+        :not([type=password])
+        :not([type=radio])
+        :not([type=range])
+        :not([type=submit])
+    `.replaceAll(/\s/g, "");
 
 function getInputs() {
     return document.querySelectorAll(INPUT_QUERY);

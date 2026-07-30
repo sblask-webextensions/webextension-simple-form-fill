@@ -22,7 +22,7 @@ function addAutoCompleteToInputs(message) {
             ),
             // custom select to prevent reset of value after choosing item
             select: function(_event, {item}) {
-                jQueryInput.val( item.value );
+                jQueryInput.val(item.value);
                 const detail = {
                     simpleFormFillCustomInputEvent: true,
                 };
@@ -156,42 +156,43 @@ function getCSS(jQueryInput) {
         borderWidth = "1px";
     }
 
-    const css = "" +
+    const css = `
 
-        "background-color: "           + backgroundColor + " !important;" +
+        background-color:           ${backgroundColor} !important;
 
-        "border-left-color: "          + borderColor     + " !important;" +
-        "border-top-color: "           + borderColor     + " !important;" +
-        "border-bottom-color: "        + borderColor     + " !important;" +
-        "border-right-color: "         + borderColor     + " !important;" +
+        border-left-color:          ${borderColor}     !important;
+        border-top-color:           ${borderColor}     !important;
+        border-bottom-color:        ${borderColor}     !important;
+        border-right-color:         ${borderColor}     !important;
 
-        "border-bottom-left-radius: "  + borderRadius    + " !important;" +
-        "border-bottom-right-radius: " + borderRadius    + " !important;" +
-        "border-top-left-radius: "     + borderRadius    + " !important;" +
-        "border-top-right-radius: "    + borderRadius    + " !important;" +
+        border-bottom-left-radius:  ${borderRadius}    !important;
+        border-bottom-right-radius: ${borderRadius}    !important;
+        border-top-left-radius:     ${borderRadius}    !important;
+        border-top-right-radius:    ${borderRadius}    !important;
 
-        "border-bottom-style: "        + borderStyle     + " !important;" +
-        "border-left-style: "          + borderStyle     + " !important;" +
-        "border-right-style: "         + borderStyle     + " !important;" +
-        "border-top-style: "           + borderStyle     + " !important;" +
+        border-bottom-style:        ${borderStyle}     !important;
+        border-left-style:          ${borderStyle}     !important;
+        border-right-style:         ${borderStyle}     !important;
+        border-top-style:           ${borderStyle}     !important;
 
-        "border-bottom-width: "        + borderWidth     + " !important;" +
-        "border-left-width: "          + borderWidth     + " !important;" +
-        "border-right-width: "         + borderWidth     + " !important;" +
-        "border-top-width: "           + borderWidth     + " !important;" +
+        border-bottom-width:        ${borderWidth}     !important;
+        border-left-width:          ${borderWidth}     !important;
+        border-right-width:         ${borderWidth}     !important;
+        border-top-width:           ${borderWidth}     !important;
 
-        "color: "                      + color           + " !important;" +
 
-        "padding-bottom: "             + "0"             + " !important;" +
-        "padding-left: "               + "0"             + " !important;" +
-        "padding-right: "              + "0"             + " !important;" +
-        "padding-top: "                + "0"             + " !important;" +
+        color:                      ${color}           !important;
 
-        "";
+        padding-bottom:             0                  !important;
+        padding-left:               0                  !important;
+        padding-right:              0                  !important;
+        padding-top:                0                  !important;
+
+    `;
 
     return css;
 }
 
-browser.runtime.onMessage.addListener(message => {
+browser.runtime.onMessage.addListener((message) => {
     addAutoCompleteToInputs(message);
 });

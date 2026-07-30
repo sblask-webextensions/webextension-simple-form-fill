@@ -35,7 +35,6 @@ browser.storage.local.get([
 ])
     .then(
         (result) => {
-
             if (result[OPTION_ITEMS_KEY] === undefined) {
                 browser.storage.local.set({[OPTION_ITEMS_KEY]: ""});
             } else {
@@ -85,13 +84,11 @@ browser.storage.local.get([
             } else {
                 syncItems = result[OPTION_SYNC_ITEMS];
             }
-
         }
     );
 
 browser.storage.onChanged.addListener(
     (changes, areaName) => {
-
         let initTriggered = false;
         if (changes[OPTION_SYNC_ITEMS]) {
             const previousValue = syncItems;
@@ -105,7 +102,7 @@ browser.storage.onChanged.addListener(
 
         if (changes[OPTION_ITEMS_KEY]) {
             itemString = changes[OPTION_ITEMS_KEY].newValue;
-            if (!initTriggered){
+            if (!initTriggered) {
                 maybeSyncItems(areaName, itemString);
             }
         }
@@ -139,7 +136,6 @@ browser.storage.onChanged.addListener(
         if (autocompleteEnabled) {
             sendOptionsToActiveTab();
         }
-
     }
 );
 
@@ -189,7 +185,7 @@ function maybeFillContextMenu() {
     }
 }
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
     switch (info.menuItemId) {
         case CONTEXT_MENU_PREFERENCES_ID:
             browser.runtime.openOptionsPage();
@@ -197,13 +193,15 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
         case CONTEXT_MENU_ADD_SELECTION_ID:
             addItem(info.selectionText);
             break;
-        default:
-            chainPromises([
-                ()            => { return browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true}); },
-                ()            => { return commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId; },
-                (cleanedItem) => { return browser.tabs.sendMessage(tab.id, {item: cleanedItem}); },
-            ]);
-
+        default: {
+            try {
+                await browser.tabs.executeScript(tab.id, {file: "content-scripts/insert-item.js", allFrames: true});
+                const cleanedItem = commentString ? info.menuItemId.split(commentString)[0] : info.menuItemId;
+                await browser.tabs.sendMessage(tab.id, {item: cleanedItem});
+            } catch (error) {
+                console.warn(error.message, error.stack);
+            }
+        }
     }
 });
 
@@ -225,7 +223,7 @@ function sendOptions(tabId, frameId) {
         options.frameId = frameId;
     }
 
-    browser.tabs.sendMessage(
+    return browser.tabs.sendMessage(
         tabId,
         {
             commentString,
@@ -246,18 +244,16 @@ function itemStringToList(itemString) {
     return itemString.split(/\r?\n/).filter(Boolean);
 }
 
-function sendOptionsToActiveTab() {
+async function sendOptionsToActiveTab() {
     console.debug("Send items to active tab");
-    browser.tabs.query({currentWindow: true, active: true})
-        .then((matchingTabs) => { sendOptions(matchingTabs[0].id); });
+    const matchingTabs = await browser.tabs.query({currentWindow: true, active: true});
+    return sendOptions(matchingTabs[0].id);
 }
 
 function onUpdated(tabId, changeInfo) {
     if (changeInfo.status == "complete") {
         console.debug("New page loaded, check for inputs");
-        chainPromises([
-            () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js", allFrames: true}); },
-        ]);
+        return browser.tabs.executeScript(tabId, {file: "content-scripts/checker.js", allFrames: true});
     }
 }
 
@@ -273,15 +269,17 @@ function onMessage(message, sender) {
     }
 }
 
-function initializeAutocomplete(tabId, frameId) {
+async function initializeAutocomplete(tabId, frameId) {
     console.debug("Initialize autocomplete for tab " + tabId + " and frame " + frameId);
-    chainPromises([
-        () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js",      frameId: frameId}); },
-        () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js",  frameId: frameId}); },
-        () => { return browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js",      frameId: frameId}); },
-        () => { return browser.tabs.insertCSS(tabId,     {file: "content-scripts/autocomplete.css",     frameId: frameId}); },
-        () => { return sendOptions(tabId, frameId); },
-    ]);
+    try {
+        await browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-3.1.1.js", frameId: frameId});
+        await browser.tabs.executeScript(tabId, {file: "content-scripts/jquery-ui-1.12.1.js", frameId: frameId});
+        await browser.tabs.executeScript(tabId, {file: "content-scripts/autocomplete.js", frameId: frameId});
+        await browser.tabs.insertCSS(tabId, {file: "content-scripts/autocomplete.css", frameId: frameId});
+        await sendOptions(tabId, frameId);
+    } catch (error) {
+        console.warn(error.message, error.stack);
+    }
 }
 
 function enableDisableAutocomplete(enable) {
@@ -332,18 +330,9 @@ function maybeSyncItems(changedArea, itemString) {
     toArea.get([OPTION_ITEMS_KEY]).then(
         (result) => {
             const targetItemString = result[OPTION_ITEMS_KEY];
-            if (targetItemString !== itemString){
+            if (targetItemString !== itemString) {
                 toArea.set({[OPTION_ITEMS_KEY]: itemString});
             }
         }
     );
-}
-
-function chainPromises(functions) {
-    let promise = Promise.resolve();
-    for (const function_ of functions) {
-        promise = promise.then(function_);
-    }
-
-    return promise.catch((error) => { console.warn(error.message, error.stack); });
 }
