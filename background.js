@@ -262,6 +262,9 @@ function onUpdated(tabId, changeInfo) {
 }
 
 function onMessage(message, sender) {
+    if (sender.id !== browser.runtime.id || !sender.tab) {
+        return;
+    }
     if (message.text == "refreshAutocomplete") {
         if (message.requireInizialization) {
             console.debug("Background got request to initialize autocompletes");
