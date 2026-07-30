@@ -46,7 +46,6 @@ textarea:focus.error {
 .box-wrapper {
     align-items: center;
     display: flex;
-    flex-wrap: wrap;
     gap: 5px;
     row-gap: 0;
 }
