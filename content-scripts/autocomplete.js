@@ -1,17 +1,22 @@
 "use strict";
 
+function getInputs() {
+    // INPUT_QUERY is defined in checker.js
+    return document.querySelectorAll(INPUT_QUERY); // eslint-disable-line no-undef
+}
+
 function addAutoCompleteToInputs(message) {
     if (!message.itemList) {
         return;
     }
 
-    // getInputs() defined in checker.js
-    for (const input of getInputs()) { //  eslint-disable-line no-undef
+    for (const input of getInputs()) {
         const jQueryInput = $(input);
         jQueryInput.attr("autocomplete", "on");
 
+        jQueryInput.off("keydown.simpleFormFill");
         if (message.useTabToChooseItems) {
-            jQueryInput.keydown(keydownWrapper(jQueryInput));
+            jQueryInput.on("keydown.simpleFormFill", keydownWrapper(jQueryInput));
         }
 
         jQueryInput.autocomplete({
@@ -49,12 +54,17 @@ function addAutoCompleteToInputs(message) {
             },
         });
 
-        jQueryInput.data("ui-autocomplete")._resizeMenu = function() {
+        const autocomplete = jQueryInput.data("ui-autocomplete");
+        autocomplete.liveRegion
+            .attr("aria-live", "off")
+            .addClass("simple-form-fill");
+
+        autocomplete._resizeMenu = function() {
             this.menu.element.css("cssText", getCSS(jQueryInput));
             this.menu.element.outerWidth(jQueryInput.outerWidth());
         };
 
-        jQueryInput.data("ui-autocomplete")._renderItem = function(ul, item) {
+        autocomplete._renderItem = function(ul, item) {
             let divContent = item.label;
             if (message.commentString && item.label.indexOf(message.commentString) != -1) {
                 const splits = item.label.split(message.commentString);
@@ -193,6 +203,24 @@ function getCSS(jQueryInput) {
     return css;
 }
 
-browser.runtime.onMessage.addListener((message) => {
-    addAutoCompleteToInputs(message);
+function destroyAutocompleteWidgets() {
+    for (const input of getInputs()) {
+        const jQueryInput = $(input);
+        jQueryInput.off(".simpleFormFill");
+        if (jQueryInput.data("ui-autocomplete")) {
+            jQueryInput.autocomplete("destroy");
+        }
+    }
+}
+
+browser.runtime.onMessage.addListener((message, sender) => {
+    if (sender.id !== browser.runtime.id) {
+        return;
+    }
+
+    if (message?.type === "update-autocomplete-options") {
+        addAutoCompleteToInputs(message);
+    } else if (message?.type === "update-autocomplete-status" && message.enabled === false) {
+        destroyAutocompleteWidgets();
+    }
 });

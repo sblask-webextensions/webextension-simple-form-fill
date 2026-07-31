@@ -1,4 +1,4 @@
-.ui-helper-hidden-accessible {
+.ui-helper-hidden-accessible.simple-form-fill {
     display: none;
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill {

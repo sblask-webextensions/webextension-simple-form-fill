@@ -1,25 +1,49 @@
 {
-    "author": "Sebastian Blask",
-    "background": {
-        "scripts": [
-            "util.js",
-            "background.js"
-        ],
-        "type": "module"
-    },
-    "browser_action": {
-        "browser_style": false,
+    "action": {
         "default_icon": "icon.svg",
         "default_popup": "options/options.html",
         "default_title": "Simple Form Fill"
     },
+    "author": "Sebastian Blask",
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "service_worker": "background.js",
+        "type": "module"
+    },
     "browser_specific_settings": {
         "gecko": {
-            "id": "simpleformfill@sblask"
+            "data_collection_permissions": {
+                "required": [
+                    "none"
+                ]
+            },
+            "id": "simpleformfill@sblask",
+            "strict_min_version": "140.0"
+        },
+        "gecko_android": {
+            "strict_min_version": "142.0"
         }
     },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "js": [
+                "content-scripts/insert-item.js",
+                "content-scripts/checker.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
     "description": "Enter text into input fields by choosing items from the context menu or using the optional autocomplete.",
     "homepage_url": "https://github.com/sblask/webextension-simple-form-fill",
+    "host_permissions": [
+        "<all_urls>"
+    ],
     "icons": {
         "16": "icon-16x16.png",
         "32": "icon-32x32.png",
@@ -27,15 +51,15 @@
         "64": "icon-64x64.png",
         "128": "icon-128x128.png"
     },
-    "manifest_version": 2,
+    "manifest_version": 3,
     "minimum_chrome_version": "148",
     "name": "Simple Form Fill",
     "options_ui": {
         "page": "options/options.html"
     },
     "permissions": [
-        "<all_urls>",
         "contextMenus",
+        "scripting",
         "storage"
     ],
     "version": "x.x.x"

@@ -1,43 +1,117 @@
 "use strict";
 
 const INPUT_QUERY = `
-        input
-        :not([type=checkbox])
-        :not([type=color])
-        :not([type=hidden])
-        :not([type=image])
-        :not([type=password])
-        :not([type=radio])
-        :not([type=range])
-        :not([type=submit])
-    `.replaceAll(/\s/g, "");
+    input
+    :not([type=checkbox])
+    :not([type=color])
+    :not([type=hidden])
+    :not([type=image])
+    :not([type=password])
+    :not([type=radio])
+    :not([type=range])
+    :not([type=submit])
+`.replaceAll(/\s/g, "");
 
-function getInputs() {
-    return document.querySelectorAll(INPUT_QUERY);
+let autocompleteEnabled = false;
+let autocompleteRefreshPromise = Promise.resolve();
+let requireInizialization = true;
+
+function maybeRequestAutocompleteRefresh() {
+    if (!document.querySelector(INPUT_QUERY)) {
+        return;
+    }
+
+    autocompleteRefreshPromise = autocompleteRefreshPromise.then(requestAutocompleteRefresh);
 }
 
-let existingInputsCount = 0;
-let initializationRequested = false;
-function maybeSendMessage() {
-    const newInputsCount = getInputs().length;
-    if (existingInputsCount != newInputsCount) {
-        console.log("Checker for " + window.location.href + " request refresh");
-        browser.runtime.sendMessage({
-            text: "refreshAutocomplete",
-            requireInizialization: !initializationRequested,
+async function requestAutocompleteRefresh() {
+    console.log("Checker for " + window.location.href + " request refresh");
+    try {
+        const success = await browser.runtime.sendMessage({
+            type: "refresh-autocomplete",
+            requireInizialization,
         });
-        existingInputsCount = newInputsCount;
-        initializationRequested = true;
+        if (success) {
+            requireInizialization = false;
+        }
+    } catch (error) {
+        console.warn(error.message, error.stack);
     }
 }
 
-const observer = new MutationObserver(function(_mutations) {
-    maybeSendMessage();
+function mutationsContainInput(mutations) {
+    for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+            if (
+                node.nodeType === Node.ELEMENT_NODE
+                && (node.matches(INPUT_QUERY) || node.querySelector(INPUT_QUERY))
+            ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+const observer = new MutationObserver(function(mutations) {
+    if (mutationsContainInput(mutations)) {
+        maybeRequestAutocompleteRefresh();
+    }
 });
 
-observer.observe(document, {
-    childList: true,
-    subtree: true,
+function enableAutocomplete() {
+    if (autocompleteEnabled) {
+        maybeRequestAutocompleteRefresh();
+        return;
+    }
+
+    autocompleteEnabled = true;
+    maybeRequestAutocompleteRefresh();
+    const observerTarget = document.body ?? document.documentElement;
+    observer.observe(observerTarget, {
+        childList: true,
+        subtree: true,
+    });
+}
+
+function disableAutocomplete() {
+    if (!autocompleteEnabled) {
+        return;
+    }
+
+    autocompleteEnabled = false;
+    observer.disconnect();
+}
+
+function setAutocompleteEnabled(enabled) {
+    if (enabled) {
+        enableAutocomplete();
+    } else {
+        disableAutocomplete();
+    }
+}
+
+let autocompleteStatePromise = Promise.resolve();
+
+browser.runtime.onMessage.addListener((message, sender) => {
+    if (
+        sender.id !== browser.runtime.id
+        || message?.type !== "update-autocomplete-status"
+        || typeof message.enabled !== "boolean"
+    ) {
+        return;
+    }
+
+    autocompleteStatePromise = autocompleteStatePromise.then(() => {
+        setAutocompleteEnabled(message.enabled);
+    });
 });
 
-maybeSendMessage();
+autocompleteStatePromise = browser.runtime.sendMessage({
+    type: "get-autocomplete-status",
+})
+    .then(setAutocompleteEnabled)
+    .catch((error) => {
+        console.warn(error.message, error.stack);
+    });
