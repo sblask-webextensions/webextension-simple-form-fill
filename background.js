@@ -16,6 +16,7 @@ const CONTEXT_MENU_ADD_SELECTION_ID = "add-selection";
 const CONTEXT_MENU_ITEM_ID_PREFIX = "item:";
 
 const CONTENT_SCRIPT_DOCUMENT_URL_PATTERNS = [
+    "file:///*",
     "http://*/*",
     "https://*/*",
 ];
