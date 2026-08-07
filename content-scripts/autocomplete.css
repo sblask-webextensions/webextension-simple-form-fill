@@ -2,9 +2,12 @@
     display: none;
 }
 .ui-menu.ui-widget.ui-widget-content.ui-autocomplete.simple-form-fill {
+    background-color: #FFFFFF;
+    border: 1px solid #c5c5c5;
     margin: 0 !important;
     min-width: 200px;
     overflow: hidden;
+    padding: 0 !important;
     position: absolute;
     z-index: 999999999;
 }
