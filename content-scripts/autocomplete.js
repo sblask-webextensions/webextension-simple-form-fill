@@ -15,6 +15,7 @@ function addAutoCompleteToInputs(message) {
         jQueryInput.attr("autocomplete", "on");
 
         jQueryInput.off("keydown.simpleFormFill");
+        jQueryInput.on("keydown.simpleFormFill", openAutocompleteOnArrowDown(jQueryInput));
         if (message.useTabToChooseItems) {
             jQueryInput.on("keydown.simpleFormFill", keydownWrapper(jQueryInput));
         }
@@ -88,25 +89,42 @@ function sourceWrapper(itemList, commentString, matchOnlyAtBeginning) {
             matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
         }
 
-        if (term !== "") {
-            response(
-                $.map(itemList, function(item) {
-                    if (matcher.test(item)) {
-                        let value = item;
-                        if (commentString) {
-                            value = $.trim(item.split(commentString)[0]);
-                        }
-
-                        if (value) {
-                            return {label: item, value: value};
-                        }
+        response(
+            $.map(itemList, function(item) {
+                if (matcher.test(item)) {
+                    let value = item;
+                    if (commentString) {
+                        value = $.trim(item.split(commentString)[0]);
                     }
-                })
-            );
-        }
+
+                    if (value) {
+                        return {label: item, value: value};
+                    }
+                }
+            })
+        );
     }
 
     return source;
+}
+
+function openAutocompleteOnArrowDown(jQueryInput) {
+    function keydown(event) {
+        if (
+            event.keyCode !== $.ui.keyCode.DOWN
+            || jQueryInput.val() !== ""
+            || jQueryInput.autocomplete("widget").is(":visible")
+        ) {
+            return;
+        }
+
+        const minimumCharacterCount = jQueryInput.autocomplete("option", "minLength");
+        jQueryInput.autocomplete("option", "minLength", 0);
+        jQueryInput.autocomplete("search", "");
+        jQueryInput.autocomplete("option", "minLength", minimumCharacterCount);
+    }
+
+    return keydown;
 }
 
 function keydownWrapper(jQueryInput) {

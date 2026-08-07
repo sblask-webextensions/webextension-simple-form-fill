@@ -61,6 +61,52 @@ test("matches comments but inserts only the uncommented value", async ({page, se
     await expect(input).toHaveValue("Alpha");
 });
 
+test("opens and navigates all items with Arrow Down in an empty input", async ({
+    page,
+    serviceWorker,
+}) => {
+    await setExtensionOptions(serviceWorker, {
+        autocompleteEnabled: true,
+        minimumCharacterCount: 3,
+    });
+    await page.goto("/static.html");
+
+    const input = page.locator("#text");
+    await input.press("ArrowDown");
+
+    const menu = page.locator(AUTOCOMPLETE_MENU_SELECTOR);
+    await expect(menu.locator("li")).toHaveCount(3);
+    await expect(menu).toContainText("Alpha");
+    await expect(menu).toContainText("Beta");
+    await expect(menu).toContainText("Gamma");
+    await expect(input).toHaveValue("Alpha");
+
+    await input.press("ArrowDown");
+    await input.press("Enter");
+    await expect(input).toHaveValue("Beta");
+});
+
+test("restores minimum length after Arrow Down opens an empty input", async ({
+    page,
+    serviceWorker,
+}) => {
+    await setExtensionOptions(serviceWorker, {
+        autocompleteEnabled: true,
+        minimumCharacterCount: 3,
+    });
+    await page.goto("/static.html");
+
+    const input = page.locator("#text");
+    await input.press("ArrowDown");
+    await expect(page.locator(AUTOCOMPLETE_MENU_SELECTOR)).toBeVisible();
+    await input.press("Escape");
+
+    await input.fill("Al");
+    await expect(page.locator(AUTOCOMPLETE_MENU_SELECTOR)).toHaveCount(0);
+    await input.fill("Alp");
+    await expect(page.locator(AUTOCOMPLETE_MENU_SELECTOR)).toContainText("Alpha");
+});
+
 for (const {description, selector, searchTerm} of [
     {
         description: "dark solid input",
