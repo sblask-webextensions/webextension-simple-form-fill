@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Dynamic inputs</title>
+    </head>
+    <body>
+        <button id="add-direct" type="button">Add direct input</button>
+        <button id="add-container" type="button">Add container</button>
+        <button id="replace-input" type="button">Replace input</button>
+        <button id="add-noise" type="button">Add unrelated nodes</button>
+        <button id="add-transient" type="button">Add and remove input</button>
+        <div id="target"></div>
+        <script>
+            const target = document.querySelector("#target");
+
+            document.querySelector("#add-direct").addEventListener("click", () => {
+                const input = document.createElement("input");
+                input.id = "direct-input";
+                input.type = "text";
+                target.append(input);
+            });
+
+            document.querySelector("#add-container").addEventListener("click", () => {
+                const container = document.createElement("div");
+                container.innerHTML = `
+                    <input id="nested-input-one" type="text">
+                    <input id="nested-input-two" type="text">
+                `;
+                target.append(container);
+            });
+
+            document.querySelector("#replace-input").addEventListener("click", () => {
+                const input = document.querySelector("#direct-input");
+                const replacement = document.createElement("input");
+                replacement.id = "direct-input";
+                replacement.type = "text";
+                input.replaceWith(replacement);
+            });
+
+            document.querySelector("#add-noise").addEventListener("click", () => {
+                for (let index = 0; index < 100; index += 1) {
+                    const element = document.createElement("div");
+                    element.textContent = `Unrelated node ${index}`;
+                    target.append(element);
+                }
+            });
+
+            document.querySelector("#add-transient").addEventListener("click", () => {
+                const input = document.createElement("input");
+                input.type = "text";
+                target.append(input);
+                input.remove();
+            });
+        </script>
+    </body>
+</html>

@@ -2,6 +2,7 @@
     "author": "Sebastian Blask",
     "devDependencies": {
         "@eslint/js": "10.0.1",
+        "@playwright/test": "^1.62.1",
         "@stylistic/eslint-plugin": "5.10.0",
         "eslint": "10.8.0",
         "globals": "17.8.0",
@@ -18,7 +19,9 @@
         "chrome": "./bin/prepare-chrome.sh 0.0.0 && web-ext run --source-dir dist-chrome --target chromium",
         "firefox": "./bin/prepare-firefox.sh 0.0.0 && web-ext run --source-dir dist-firefox --devtools",
         "german": "./bin/prepare-firefox.sh 0.0.0 && web-ext run --source-dir dist-firefox --pref=general.useragent.locale=de-DE --pref=intl.locale.matchOS=false",
-        "test": "tape test/*.js"
+        "test": "tape test/*.js",
+        "test:e2e": "./bin/prepare-chrome.sh 0.0.0 && playwright test",
+        "test:e2e:headed": "./bin/prepare-chrome.sh 0.0.0 && playwright test --headed"
     },
     "title": "Simple Form Fill",
     "type": "module",

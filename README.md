@@ -23,3 +23,21 @@ You can report bugs or make feature requests on
 [Github](https://github.com/sblask/webextension-simple-form-fill)
 
 Patches are welcome.
+
+Testing
+-------
+
+Install the Chromium browser used by Playwright once:
+
+```sh
+npx playwright install chromium
+```
+
+Run the unit and extension end-to-end tests with:
+
+```sh
+npm test
+npm run test:e2e
+```
+
+Use `npm run test:e2e:headed` to watch the end-to-end tests in Chromium.

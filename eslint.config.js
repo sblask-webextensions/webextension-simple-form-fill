@@ -135,4 +135,15 @@ export default [
             ],
         },
     },
+    {
+        files: [
+            "e2e/**/*.js",
+            "playwright.config.mjs",
+        ],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+    },
 ];

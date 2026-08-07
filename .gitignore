@@ -4,3 +4,5 @@
 /dist-chrome/
 /dist-firefox/
 /node_modules/
+/playwright-report/
+/test-results/

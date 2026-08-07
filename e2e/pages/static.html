@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Static inputs</title>
+    </head>
+    <body>
+        <label for="text">Text</label>
+        <input id="text" type="text">
+        <label for="second-text">Second text</label>
+        <input id="second-text" type="text">
+        <label for="textarea">Textarea</label>
+        <textarea id="textarea"></textarea>
+        <div id="input-event-count">0</div>
+        <div id="last-input-detail"></div>
+        <script>
+            let inputEventCount = 0;
+            for (const input of document.querySelectorAll("input, textarea")) {
+                input.addEventListener("input", (event) => {
+                    inputEventCount += 1;
+                    document.querySelector("#input-event-count").textContent = inputEventCount;
+                    document.querySelector("#last-input-detail").textContent =
+                        String(Boolean(event.detail?.simpleFormFillCustomInputEvent));
+                });
+            }
+        </script>
+    </body>
+</html>
