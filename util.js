@@ -3,9 +3,6 @@ const STRFTIME_MARKER = "strftime";
 export function strftime(format, date = new Date()) {
     const locale = undefined;
     const pad = (num) => String(num).padStart(2, "0");
-    const dayPeriod = new Intl.DateTimeFormat(locale, {hour: "numeric", hour12: true})
-        .formatToParts(date)
-        .find((part) => part.type === "dayPeriod")?.value;
 
     const tokens = {
         "%A": new Intl.DateTimeFormat(locale, {weekday: "long"}).format(date),
@@ -19,7 +16,7 @@ export function strftime(format, date = new Date()) {
         "%b": new Intl.DateTimeFormat(locale, {month: "short"}).format(date),
         "%d": pad(date.getDate()),
         "%m": pad(date.getMonth() + 1),
-        "%p": dayPeriod,
+        "%p": date.getHours < 12 ? "am" : "pm",
         "%y": pad(date.getFullYear() % 100),
     };
 
