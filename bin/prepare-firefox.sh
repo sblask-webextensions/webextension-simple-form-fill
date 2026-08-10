@@ -43,6 +43,11 @@ for directory in _locales content-scripts options; do
   fi
 done
 
+# util.js is an ES module for background.js; strip the "export " keyword to
+# get a classic script content scripts can load via executeScript's files
+printf '"use strict";\n\n' > "${DIST_DIRECTORY}/content-scripts/util.js"
+sed -E 's/^export //' "${ROOT_DIRECTORY}/util.js" >> "${DIST_DIRECTORY}/content-scripts/util.js"
+
 find "${ROOT_DIRECTORY}" \
   -maxdepth 1 \
   -type f \

@@ -1,8 +1,11 @@
+// defined in utils.js, moved to content-scripts/util.js and modified by prepare scripts
+/* global formatItem:readonly */
+// defined in checker.js
+/* global INPUT_QUERY:readonly */
 "use strict";
 
 function getInputs() {
-    // INPUT_QUERY is defined in checker.js
-    return document.querySelectorAll(INPUT_QUERY); // eslint-disable-line no-undef
+    return document.querySelectorAll(INPUT_QUERY);
 }
 
 function addAutoCompleteToInputs(message) {
@@ -91,15 +94,12 @@ function sourceWrapper(itemList, commentString, matchOnlyAtBeginning) {
 
         response(
             $.map(itemList, function(item) {
-                if (matcher.test(item)) {
-                    let value = item;
-                    if (commentString) {
-                        value = $.trim(item.split(commentString)[0]);
-                    }
-
-                    if (value) {
-                        return {label: item, value: value};
-                    }
+                const formattedItem = formatItem(item, commentString);
+                if (formattedItem.withoutComment && matcher.test(formattedItem.withComment)) {
+                    return {
+                        label: formattedItem.withComment,
+                        value: formattedItem.withoutComment,
+                    };
                 }
             })
         );

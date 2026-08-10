@@ -1,3 +1,4 @@
+import * as util from "../util.js";
 import {
     test,
     expect,
@@ -59,6 +60,26 @@ test("matches comments but inserts only the uncommented value", async ({page, se
     await input.press("ArrowDown");
     await input.press("Enter");
     await expect(input).toHaveValue("Alpha");
+});
+
+test("resolves strftime items to the current date in the popup and on selection without formatting the comment", async ({
+    page,
+    serviceWorker,
+}) => {
+    await setExtensionOptions(serviceWorker, {
+        autocompleteEnabled: true,
+        commentString: " # ",
+        items: "%Y-%m-%d # strftime today in %Y-%m-%d format",
+    });
+    await page.goto("/static.html");
+
+    const input = page.locator("#text");
+    await input.fill("today");
+    const menu = page.locator(AUTOCOMPLETE_MENU_SELECTOR);
+    await expect(menu).toContainText(`${util.strftime("%Y-%m-%d")} # strftime today in %Y-%m-%d format`);
+    await input.press("ArrowDown");
+    await input.press("Enter");
+    await expect(input).toHaveValue(util.strftime("%Y-%m-%d"));
 });
 
 test("opens and navigates all items with Arrow Down in an empty input", async ({

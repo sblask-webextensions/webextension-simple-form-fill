@@ -62,15 +62,6 @@
 
                     <div>
                         <label
-                            for="comment-string"
-                            title="Everything after and including this string will be removed from items before filling an input field"
-                            >Comment string</label>
-                        <input type="text" id="comment-string"></input>
-                    </div>
-
-
-                    <div>
-                        <label
                             for="minimum-character-count"
                             title="Autocomplete is opened only after at least this many characters have been typed"
                             >Minimum number of characters to trigger autocomplete</label>
@@ -95,6 +86,48 @@
                     </div>
 
                 </fieldset>
+
+                <fieldset>
+                    <legend
+                        title="Everything after and including this string will be removed from items before filling an input field"
+                        >Comment string</legend>
+                        <input type="text" id="comment-string"></input>
+                        <br/>
+                        <br/>
+                        <div>
+                            <p>
+                                You can define your own comment string here. Everything after and
+                                including this string will be removed from items (but still matched
+                                against in autocomplete) before filling an input field e.g.
+                                only <code>example item</code> would be inserted for this item:
+                                <code>example item // comment string</code> if
+                                <code> // </code> is set as comment string.
+                            </p>
+
+                            <p>
+                            If you include the word
+                            <code>strftime</code> after the comment string, format codes will
+                            be expanded on insertion e.g. <code>%Y-%m-%d // strftime</code>
+                            will be inserted as <code>2026-05-03</code>. <br/> Supported format codes:
+                            <ul>
+                                <li><code>%A</code> - full weekday name</li>
+                                <li><code>%a</code> - abbreviated weekday name</li>
+                                <li><code>%B</code> - full month name</li>
+                                <li><code>%b</code> - abbreviated month name</li>
+                                <li><code>%d</code> - day of the month, zero-padded</li>
+                                <li><code>%H</code> - hour, 24-hour clock, zero-padded</li>
+                                <li><code>%I</code> - hour, 12-hour clock, zero-padded</li>
+                                <li><code>%m</code> - month, zero-padded</li>
+                                <li><code>%M</code> - minute, zero-padded</li>
+                                <li><code>%p</code> - am or pm</li>
+                                <li><code>%S</code> - second, zero-padded</li>
+                                <li><code>%y</code> - two-digit year</li>
+                                <li><code>%Y</code> - four-digit year</li>
+                            </ul>
+                            </p>
+                        </div>
+                </fieldset>
+
             </fieldset>
         </form>
         <script src="./options.js"></script>

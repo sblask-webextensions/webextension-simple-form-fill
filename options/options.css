@@ -6,6 +6,10 @@ body {
     min-width: 400px;
     padding: 10px;
 }
+code {
+    background: #DDDDDD;
+    white-space: pre;
+}
 fieldset{
     border: 1px solid;
 }

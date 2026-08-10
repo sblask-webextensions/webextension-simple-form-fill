@@ -1,5 +1,7 @@
 import test from "tape";
 
+import * as util from "../util.js";
+
 const DEFAULT_OPTIONS = {
     autocompleteEnabled: false,
     commentString: "",
@@ -262,6 +264,53 @@ test("context menu item clicks target the requested tab and frame", async functi
         await listeners.contextMenuClicked({menuItemId}, {id: 42});
     }
     assert.equal(calls.sentMessages.length, 1, "ignores invalid and stale item IDs");
+    assert.end();
+});
+
+test("context menu item clicks format strftime items using the current date", async function(assert) {
+    const {calls, listeners} = await createHarness({
+        commentString: " # ",
+        items: "%Y-%m-%d # strftime today\nBeta",
+    });
+
+    await listeners.contextMenuClicked({
+        frameId: 7,
+        menuItemId: "item:0",
+    }, {id: 42});
+
+    assert.deepEqual(
+        calls.sentMessages,
+        [[
+            42,
+            {
+                item: util.strftime("%Y-%m-%d"),
+                type: "insert-item",
+            },
+            {frameId: 7},
+        ]],
+        "resolves the format string against the current date before inserting"
+    );
+    assert.end();
+});
+
+test("autocomplete item list keeps strftime format strings as they are", async function(assert) {
+    const {calls, listeners} = await createHarness({
+        autocompleteEnabled: true,
+        commentString: " # ",
+        items: "%Y-%m-%d # strftime today\nBeta",
+    });
+
+    await listeners.message(
+        {requireInizialization: false, type: "refresh-autocomplete"},
+        {id: "simple-form-fill-test", tab: {active: true, id: 42}},
+    );
+
+    const [, message] = calls.sentMessages.at(-1);
+    assert.deepEqual(
+        message.itemList,
+        ["%Y-%m-%d # strftime today", "Beta"],
+        "does not format string"
+    );
     assert.end();
 });
 

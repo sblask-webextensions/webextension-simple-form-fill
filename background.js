@@ -272,12 +272,11 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
             if (item === undefined) {
                 return;
             }
-            const cleanedItem = commentString ? item.split(commentString)[0] : item;
             browser.tabs.sendMessage(
                 tab.id,
                 {
                     type: "insert-item",
-                    item: cleanedItem,
+                    item: util.formatItem(item, commentString).withoutComment,
                 },
                 {
                     frameId: info.frameId,
@@ -389,6 +388,7 @@ async function initializeAutocomplete(tabId, frameId) {
         files: [
             "content-scripts/jquery-3.1.1.js",
             "content-scripts/jquery-ui-1.12.1.js",
+            "content-scripts/util.js",
             "content-scripts/autocomplete.js",
         ],
     });
