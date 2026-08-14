@@ -5,7 +5,7 @@
         "@playwright/test": "^1.62.1",
         "@stylistic/eslint-plugin": "5.10.0",
         "eslint": "10.8.0",
-        "globals": "17.8.0",
+        "globals": "17.9.0",
         "tape": "5.10.2",
         "web-ext": "10.6.0"
     },
