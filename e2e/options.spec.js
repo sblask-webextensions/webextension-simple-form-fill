@@ -1,4 +1,4 @@
-import {test, expect, DEFAULT_OPTIONS} from "./extension-fixtures.js";
+import {test, expect, DEFAULT_OPTIONS, setExtensionOptions, updateExtensionOptions} from "./extension-fixtures.js";
 
 test("loads defaults and persists option changes", async ({extensionId, page, serviceWorker}) => {
     await page.goto(`chrome-extension://${extensionId}/options/options.html`);
@@ -36,4 +36,20 @@ test("loads defaults and persists option changes", async ({extensionId, page, se
     await expect(page.locator("#items")).toHaveValue("One # comment\nTwo");
     await expect(page.locator("#minimum-character-count")).toHaveValue("2");
     await expect(page.locator("#sync-items-enabled")).toBeChecked();
+});
+
+test("external changes do not overriding in-progress edits on other fields", async ({extensionId, page, serviceWorker}) => {
+    await setExtensionOptions(serviceWorker, {items: DEFAULT_OPTIONS.items});
+    await page.goto(`chrome-extension://${extensionId}/options/options.html`);
+
+    await expect(page.locator("#items")).toHaveValue(DEFAULT_OPTIONS.items);
+
+    await page.locator("#comment-string").fill(" // in-progress edit");
+
+    await updateExtensionOptions(serviceWorker, {
+        items: "external edit",
+    });
+
+    await expect(page.locator("#items")).toHaveValue("external edit");
+    await expect(page.locator("#comment-string")).toHaveValue(" // in-progress edit");
 });
