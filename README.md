@@ -1,4 +1,6 @@
 [![pre-commit Status](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sblask/webextension-simple-form-fill/actions/workflows/pre-commit.yml)
+[![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/filmkodmbabpfkfhoekpgfpankdlajmf?color=db4437)](https://chromewebstore.google.com/detail/simple-form-fill/filmkodmbabpfkfhoekpgfpankdlajmf)
+[![Mozilla Add-on Version](https://img.shields.io/amo/v/simple-form-fill?color=ff7139)](https://addons.mozilla.org/firefox/addon/simple-form-fill/)
 
 Simple Form Fill
 ================
