@@ -6,7 +6,7 @@
         "@stylistic/eslint-plugin": "5.10.0",
         "eslint": "10.9.1",
         "globals": "17.11.0",
-        "tape": "5.10.2",
+        "tape": "5.10.3",
         "web-ext": "10.6.0"
     },
     "license": "MIT",
