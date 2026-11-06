@@ -45,6 +45,26 @@ test("respects minimum length and beginning-only matching", async ({page, servic
     await expect(page.locator(AUTOCOMPLETE_MENU_SELECTOR)).toHaveCount(0);
 });
 
+test("does not suggest items that match the input value exactly", async ({page, serviceWorker}) => {
+    await setExtensionOptions(serviceWorker, {
+        autocompleteEnabled: true,
+        commentString: " # ",
+        items: "Alpha # first item\nAlphabet",
+    });
+    await page.goto("/static.html");
+
+    const input = page.locator("#text");
+    const menu = page.locator(AUTOCOMPLETE_MENU_SELECTOR);
+    await input.fill("Alph");
+    await expect(menu).toContainText("Alpha # first item");
+    await expect(menu).toContainText("Alphabet");
+    await input.fill("Alpha");
+    await expect(menu).not.toContainText("Alpha # first item");
+    await expect(menu).toContainText("Alphabet");
+    await input.fill("Alphabet");
+    await expect(menu).toHaveCount(0);
+});
+
 test("matches comments but inserts only the uncommented value", async ({page, serviceWorker}) => {
     await setExtensionOptions(serviceWorker, {
         autocompleteEnabled: true,

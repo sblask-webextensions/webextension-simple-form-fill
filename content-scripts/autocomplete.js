@@ -95,7 +95,12 @@ function sourceWrapper(itemList, commentString, matchOnlyAtBeginning) {
         response(
             $.map(itemList, function(item) {
                 const formattedItem = formatItem(item, commentString);
-                if (formattedItem.withoutComment && matcher.test(formattedItem.withComment)) {
+                if (
+                    formattedItem.withoutComment
+                    // no point in suggesting what is already in the input
+                    && formattedItem.withoutComment !== request.term
+                    && matcher.test(formattedItem.withComment)
+                ) {
                     return {
                         label: formattedItem.withComment,
                         value: formattedItem.withoutComment,
